@@ -28,6 +28,8 @@
 
 #define USBD_PRODUCT_STRING     "OMNIBUS F4 FWX V2"
 
+#define USE_DSHOT
+
 // Status LED
 #define LED0                    PA8
 
@@ -70,13 +72,14 @@
 #define USE_MAG_MAG3110
 #define USE_MAG_LIS3MDL
 
+#define TEMPERATURE_I2C_BUS     BUS_I2C2
+
 #define USE_BARO
 
 #define USE_BARO_BMP280
 #define BMP280_SPI_BUS        BUS_SPI3
 #define BMP280_CS_PIN         PB3
 
-#define USE_PITOT_MS4525
 #define PITOT_I2C_BUS           BUS_I2C2
 
 #define USE_RANGEFINDER
@@ -170,7 +173,6 @@
 #define SERIALRX_UART                   SERIAL_PORT_USART1
 #define SMARTAUDIO_UART                 SERIAL_PORT_USART4
 
-#define TARGET_CONFIG
 #define CURRENT_METER_SCALE             175
 #define CURRENT_METER_OFFSET            326
 
