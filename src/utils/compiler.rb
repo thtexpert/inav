@@ -31,11 +31,15 @@ require 'shellwords'
 
 class Compiler
     def initialize
+    	puts "--- Compiler.initialize"
         # Look for the compiler in PATH manually, since there
         # are some issues with the built-in search by spawn()
         # on Windows if PATH contains spaces.
         dirs = (ENV["PATH"] || "").split(File::PATH_SEPARATOR)
         bin = "arm-none-eabi-g++"
+        
+         @path = "arm-none-eabi-g++"
+         return 
         dirs.each do |dir|
             p = File.join(dir, bin)
             ['', '.exe'].each do |suffix|
@@ -45,12 +49,14 @@ class Compiler
                         puts "Found #{bin} at #{f}"
                     end
                     @path = f
+    	puts "--- 1 path #{f}"
                     return
                 end
             end
         end
         raise "Could not find #{bin} in PATH, looked in #{dirs}"
         @verbose = ENV["V"] == "1"
+    	puts "--- 2 path #{f}"
     end
 
     def default_args
