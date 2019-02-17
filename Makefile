@@ -209,8 +209,7 @@ OPTIMIZE    = -O0
 LTO_FLAGS   = $(OPTIMIZE)
 else
 OPTIMIZE    = -Os
-#LTO_FLAGS   = -flto -fuse-linker-plugin $(OPTIMIZE)
-LTO_FLAGS   =  $(OPTIMIZE)
+LTO_FLAGS   = -flto -fuse-linker-plugin $(OPTIMIZE)
 endif
 
 DEBUG_FLAGS = -ggdb3 -DDEBUG
