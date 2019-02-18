@@ -1786,3 +1786,88 @@ groups:
         min: 0
         max: 255
         type: uint8_t
+        
+  - name: PG_MIXER_FLETTNER
+    type: mixerflettner_t
+    headers: ["flight/mixer_twin.h"]
+    members:
+      - name: flettner_nicktravel
+        field: nicktravel
+        min: 10
+        max: 2000
+      - name: flettner_rolltravel
+        field: rolltravel
+        min: 10
+        max: 2000
+      - name: flettner_pitchtravel
+        field: pitchtravel
+        min: 30
+        max: 2000
+      - name: flettner_cyclicring
+        field: cyclicring
+        min: 50
+        max: 950
+      - name: flettner_pitchmax
+        field: pitchmax
+        min: 50
+        max: 1350
+      - name: flettner_pitchmin
+        field: pitchmin
+        min: -1350
+        max: -50
+      - name: flettner_cyclicmix
+        field: cyclicmix
+        min: -1000
+        max: 1000
+      - name: flettner_collectivemix
+        field: collectivemix
+        min: -1000
+        max: 1000
+      - name: flettner_collectivemixthreshold
+        field: collectivemixthreshold
+        min: -1350
+        max: 1350
+      - name: flettner_collectivemixmax
+        field: collectivemixmax
+        min: 50
+        max: 1350
+      - name: flettner_nickdma
+        field: nickdma
+        min: -500
+        max: 500
+      - name: flettner_centerall
+        field: centerall
+        min: 0
+        max: 1
+      - name: flettner_platetype
+        field: platetype
+        min: 0
+        max: 2
+      - name: flettner_rotationleft
+        field: rotationleft
+        min: -1790
+        max: 1800
+      - name: flettner_rotationright
+        field: rotationright
+        min: -1790
+        max: 1800
+      - name: flettner_virtualrotleft
+        field: virtualrotleft
+        min: -1790
+        max: 1800
+      - name: flettner_virtualrotright
+        field: virtualrotright
+        min: -1790
+        max: 1800
+      - name: flettner_cyclictravel
+        field: cyclictravel
+        min: -2000
+        max: 2000
+      - name: flettner_collectivtravel
+        field: collectivtravel
+        min: -2000
+        max: 2000
+      - name: flettner_collectivoffset
+        field: collectivoffset
+        min: -1000
+        max: 1000

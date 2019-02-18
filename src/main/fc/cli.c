@@ -2572,6 +2572,25 @@ static void cliTasks(char *cmdline)
 }
 #endif
 
+static void cliFlettner(char *cmdline)
+{
+    UNUSED(cmdline);
+
+    const setting_t *val;
+    char name[SETTING_MAX_NAME_LENGTH];
+
+    for (uint32_t i = 0; i < SETTINGS_TABLE_COUNT; i++) {
+        val = settingGet(i);
+        if (settingNameContains(val, name, "flettner_")) {
+            cliPrintf("%s = ", name);
+            cliPrintVar(val, 0);
+            cliPrintLinefeed();
+        }
+    }
+
+    printServo(DUMP_MASTER, servoParams(0), NULL);
+}
+
 static void cliVersion(char *cmdline)
 {
     UNUSED(cmdline);
@@ -2868,6 +2887,7 @@ const clicmd_t cmdTable[] = {
     CLI_COMMAND_DEF("flash_write", NULL, "<address> <message>", cliFlashWrite),
 #endif
 #endif
+    CLI_COMMAND_DEF("flettner", "view flettner setup", NULL, cliFlettner),
     CLI_COMMAND_DEF("get", "get variable value", "[name]", cliGet),
 #ifdef USE_GPS
     CLI_COMMAND_DEF("gpspassthrough", "passthrough gps to serial", NULL, cliGpsPassthrough),

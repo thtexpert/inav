@@ -28,3 +28,15 @@
 
 #define MSP2_COMMON_SERIAL_CONFIG       0x1009
 #define MSP2_COMMON_SET_SERIAL_CONFIG   0x100A
+
+#define MSP2_FLETTNER_SWASH_MIX       0x100B    // out message     return swash plate mix data
+#define MSP2_FLETTNER_SET_SWASH_MIX   0x100C    // in message      set swash plate mix data
+#define MSP2_FLETTNER_SERVO_MIX       0x100D    // out message     return swash plate servo mixing data
+#define MSP2_FLETTNER_SET_SERVO_MIX   0x100E    // in message      set swash plate servo mixing data
+#define MSP2_FLETTNER_SWASH           0x100F    // out message     return swash plate live data
+#define MSP2_TILT_SETUP		          0x1010    // out message     return tilt setup data
+#define MSP2_TILT_SET_SETUP		      0x1011    // in message      set tilt setup data
+#define MSP2_TILT_SERVO_MIX		      0x1012    // out message     returns tilt servo mix data
+#define MSP2_TILT_SET_SERVO_MIX		  0x1013    // in message      set tilt servo mix data
+#define MSP2_TILT_LIVE   		      0x1014    // out message     returns tilt live data
+
