@@ -45,6 +45,7 @@
 
 #include "flight/imu.h"
 #include "flight/mixer.h"
+#include "flight/mixer_twin.h"
 #include "flight/pid.h"
 #include "flight/servos.h"
 
@@ -262,6 +263,7 @@ void servoMixer(float dT)
     input[INPUT_RC_CH14]     = rcData[AUX10]    - PWM_RANGE_MIDDLE;
     input[INPUT_RC_CH15]     = rcData[AUX11]    - PWM_RANGE_MIDDLE;
     input[INPUT_RC_CH16]     = rcData[AUX12]    - PWM_RANGE_MIDDLE;
+
 
     for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
         servo[i] = 0;

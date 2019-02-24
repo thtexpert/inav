@@ -79,6 +79,7 @@
 #include "telemetry/telemetry.h"
 
 #include "flight/mixer.h"
+#include "flight/mixer_twin.h"
 #include "flight/servos.h"
 #include "flight/pid.h"
 #include "flight/imu.h"
@@ -751,6 +752,10 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
 #endif
 
     mixTable(dT);
+
+   //if (isMixerUsingFlettner()) {
+    	flettnerMixer();
+//    }
 
     if (isMixerUsingServos()) {
         servoMixer(dT);

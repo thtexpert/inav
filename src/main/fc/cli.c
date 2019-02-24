@@ -78,6 +78,7 @@ extern uint8_t __config_end;
 #include "flight/failsafe.h"
 #include "flight/imu.h"
 #include "flight/mixer.h"
+#include "flight/mixer_twin.h"
 #include "flight/pid.h"
 #include "flight/servos.h"
 
@@ -2572,6 +2573,78 @@ static void cliTasks(char *cmdline)
 }
 #endif
 
+
+static void printFlettnerSwashServos(uint8_t dumpMask, const servoSwash_t *customFlettnerSwashServos, const servoSwash_t *defaultFlettnerSwashServos)
+{
+    const char *format = "fmix %d %d %d %d";
+    for (uint32_t i = 0; i < MAX_FLETTNER_SWASH_SERVOS; i++) {
+        const servoSwash_t customFlettnerSwashServo = customFlettnerSwashServos[i];
+
+        bool equalsDefault = false;
+        if (defaultFlettnerSwashServos) {
+        	servoSwash_t flettnerSwashServoDefault = defaultFlettnerSwashServos[i];
+            equalsDefault = customFlettnerSwashServo.roll == flettnerSwashServoDefault.roll
+                && customFlettnerSwashServo.collective == flettnerSwashServoDefault.collective
+                && customFlettnerSwashServo.pitch == flettnerSwashServoDefault.pitch;
+
+            cliDefaultPrintLinef(dumpMask, equalsDefault, format,
+                i,
+				flettnerSwashServoDefault.roll,
+				flettnerSwashServoDefault.pitch,
+				flettnerSwashServoDefault.collective
+            );
+        }
+        cliDumpPrintLinef(dumpMask, equalsDefault, format,
+            i,
+			customFlettnerSwashServo.roll,
+			customFlettnerSwashServo.pitch,
+			customFlettnerSwashServo.collective
+        );
+    }
+}
+
+static void cliFlettnerSwashServos(char *cmdline)
+{
+    char * saveptr;
+    int args[8], check = 0;
+    uint8_t len = strlen(cmdline);
+
+    if (len == 0) {
+    	printFlettnerSwashServos(DUMP_MASTER, flettnerSwashServos(0), NULL);
+    }
+    else if (sl_strncasecmp(cmdline, "reset", 5) == 0) {
+        // erase custom mixer
+        pgResetCopy(flettnerSwashServosMutable(0), PG_FLETTNER_SWASH_SERVOS);
+    } else {
+        enum {SERVO  = 0, ROLL, PITCH, COLLECTIVE, ARGS_COUNT};
+        char *ptr = strtok_r(cmdline, " ", &saveptr);
+        while (ptr != NULL && check < ARGS_COUNT) {
+            args[check++] = fastA2I(ptr);
+            ptr = strtok_r(NULL, " ", &saveptr);
+        }
+
+        if (ptr != NULL || check != ARGS_COUNT) {
+        	cliPrintLine("invalid number of arguments");
+            cliShowParseError();
+            return;
+        }
+
+        int32_t i = args[SERVO];
+        if (i >= 0 && i < MAX_FLETTNER_SWASH_SERVOS &&
+            args[ROLL] <=2000  && args[ROLL] >= -2000 &&
+            args[PITCH] <=2000  && args[PITCH] >= -2000 &&
+            args[COLLECTIVE] <=2000  && args[COLLECTIVE] >= -2000) {
+        	flettnerSwashServosMutable(i)->roll = args[ROLL];
+        	flettnerSwashServosMutable(i)->pitch = args[PITCH];
+        	flettnerSwashServosMutable(i)->collective = args[COLLECTIVE];
+        	cliFlettnerSwashServos("");
+        } else {
+        	cliPrintLine("argument out of range");
+            cliShowParseError();
+        }
+    }
+}
+
 static void cliFlettner(char *cmdline)
 {
     UNUSED(cmdline);
@@ -2587,7 +2660,7 @@ static void cliFlettner(char *cmdline)
             cliPrintLinefeed();
         }
     }
-
+    printFlettnerSwashServos(DUMP_MASTER, flettnerSwashServos(0), NULL);
     printServo(DUMP_MASTER, servoParams(0), NULL);
 }
 
@@ -2723,6 +2796,10 @@ static void printConfig(const char *cmdline, bool doDiff)
         cliPrintHashLine("servo mix");
         cliDumpPrintLinef(dumpMask, customServoMixers(0)->rate == 0, "smix reset\r\n");
         printServoMix(dumpMask, customServoMixers_CopyArray, customServoMixers(0));
+
+        cliPrintHashLine("flettner mix");
+        //cliDumpPrintLinef(dumpMask, customServoMixers(0)->rate == 0, "smix reset\r\n");
+        printFlettnerSwashServos(dumpMask, flettnerSwashServos_CopyArray, flettnerSwashServos(0));
 
         // print servo parameters
         cliPrintHashLine("servo");
@@ -2888,6 +2965,9 @@ const clicmd_t cmdTable[] = {
 #endif
 #endif
     CLI_COMMAND_DEF("flettner", "view flettner setup", NULL, cliFlettner),
+    CLI_COMMAND_DEF("fmix", "flettner mixer",
+        "<servo> <roll> <pitch> <collective>\r\n"
+        "\treset\r\n", cliFlettnerSwashServos),
     CLI_COMMAND_DEF("get", "get variable value", "[name]", cliGet),
 #ifdef USE_GPS
     CLI_COMMAND_DEF("gpspassthrough", "passthrough gps to serial", NULL, cliGpsPassthrough),

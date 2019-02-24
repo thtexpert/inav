@@ -11,12 +11,19 @@
 
 #include "config/parameter_group.h"
 
-// intermediate data for flettner swash plates
+enum {
+    SwashLeft = 0,
+	SwashRight = 1
+};
+
+// live data for flettner/tilt swash plates
 typedef struct swashPlate_s {
-	int16_t throttle;	// 100 per degree
+	int16_t collective;	// 100 per degree
 	int16_t roll;		// 100 per degree
 	int16_t pitch;		// 100 per degree
 } swashPlate_t;
+
+extern swashPlate_t swashPlates[2];
 
 typedef struct mixerflettner_s {
 	int16_t nicktravel;  	// scaling 10 = 1%
@@ -43,21 +50,15 @@ typedef struct mixerflettner_s {
 
 PG_DECLARE(mixerflettner_t, mixerFlettner);
 
-typedef struct servo_mixer_s {
+#define MAX_FLETTNER_SWASH_SERVOS (6)
+// mix for servos in swashplate
+typedef struct servoSwash_s {
 	int16_t roll;	// scaling 10 = 1%
-	int16_t nick;	// scaling 10 = 1%, for tilt nacelle plane position
-	int16_t pitch;	// scaling 10 = 1%, for tilt nacelle heli position
-} servo_mixer_t;
+	int16_t pitch;	// scaling 10 = 1%, for tilt nacelle plane position
+	int16_t collective;	// scaling 10 = 1%, for tilt nacelle heli position
+} servoSwash_t;
 
-typedef struct swash_servo_mix_s {
-	servo_mixer_t servo[6];
-} swash_servo_mix_t;
-
-enum {
-    SWASH123 = 0,
-	SWASH456 = 1,
-    SWASHLAST = 2
-};
+PG_DECLARE_ARRAY(servoSwash_t, MAX_FLETTNER_SWASH_SERVOS, flettnerSwashServos);
 
 typedef struct mixertilt_s {
 //    int16_t min;                            // servo min, for tilt the heli position
@@ -102,6 +103,7 @@ typedef struct tiltlive_s {
 } tiltlive_t;
 
 
-
+bool isMixerUsingFlettner(void);
+void flettnerMixer(void);
 
 #endif /* SRC_MAIN_FLIGHT_MIXER_TWIN_H_ */

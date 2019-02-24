@@ -77,7 +77,8 @@
 #define PG_ELERES_CONFIG 55
 #define PG_TEMP_SENSOR_CONFIG 56
 #define PG_MIXER_FLETTNER 57
-#define PG_CF_END 58
+#define PG_FLETTNER_SWASH_SERVOS 58
+#define PG_CF_END 59
 
 // Driver configuration
 //#define PG_DRIVER_PWM_RX_CONFIG 100
