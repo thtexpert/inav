@@ -1791,28 +1791,28 @@ groups:
     type: mixerflettner_t
     headers: ["flight/mixer_twin.h"]
     members:
-      - name: flettner_nicktravel
-        field: nicktravel
+      - name: flettner_pitchtravel
+        field: pitchtravel
         min: 10
         max: 2000
       - name: flettner_rolltravel
         field: rolltravel
         min: 10
         max: 2000
-      - name: flettner_pitchtravel
-        field: pitchtravel
+      - name: flettner_collectivetravel
+        field: collectivetravel
         min: 30
         max: 2000
       - name: flettner_cyclicring
         field: cyclicring
         min: 50
         max: 950
-      - name: flettner_pitchmax
-        field: pitchmax
+      - name: flettner_collectivemax
+        field: collectivemax
         min: 50
         max: 1350
-      - name: flettner_pitchmin
-        field: pitchmin
+      - name: flettner_collectivemin
+        field: collectivemin
         min: -1350
         max: -50
       - name: flettner_cyclicmix
@@ -1831,8 +1831,8 @@ groups:
         field: collectivemixmax
         min: 50
         max: 1350
-      - name: flettner_nickdma
-        field: nickdma
+      - name: flettner_pitchff
+        field: pitchff
         min: -500
         max: 500
       - name: flettner_centerall

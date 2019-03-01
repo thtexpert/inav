@@ -44,8 +44,9 @@ typedef enum {
     PLATFORM_TRICOPTER      = 3,
     PLATFORM_ROVER          = 4,
     PLATFORM_BOAT           = 5,
-    PLATFORM_TWINROTOR      = 6,
-    PLATFORM_OTHER          = 7
+    PLATFORM_FLETTNER       = 6,
+	PLATFORM_TILTROTOR      = 7,
+    PLATFORM_OTHER          = 8
 } flyingPlatformType_e;
 
 typedef struct motorAxisCorrectionLimits_s {

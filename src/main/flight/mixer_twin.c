@@ -50,17 +50,17 @@ swashPlate_t swashPlates[2];
 PG_REGISTER_WITH_RESET_TEMPLATE(mixerflettner_t, mixerFlettner, PG_MIXER_FLETTNER, 0);
 
 PG_RESET_TEMPLATE(mixerflettner_t, mixerFlettner,
-		.nicktravel = 710,			// scaling 10 = 1%
+		.pitchtravel = 710,			// scaling 10 = 1%
 		.rolltravel = 450,			// scaling 10 = 1%
-		.pitchtravel = 480,			// scaling 10 = 1%
+		.collectivetravel = 480,			// scaling 10 = 1%
 		.cyclicring = 600,			// scaling 100 = 1degree
-		.pitchmax = 1200,			// scaling 100 = 1degree
-		.pitchmin = -400,			// scaling 100 = 1degree
+		.collectivemax = 1200,			// scaling 100 = 1degree
+		.collectivemin = -400,			// scaling 100 = 1degree
 		.cyclicmix = 580,			// scaling 10 = 1%
 		.collectivemix = 180,		// scaling 10 = 1%
 		.collectivemixthreshold = 100,	// scaling 100 = 1degree
 		.collectivemixmax = 170,		// scaling 100 = 1degree
-		.nickdma = 0,				// scaling 10 = 1%
+		.pitchff = 0,				// scaling 10 = 1%
 		.centerall = 0,				// assume swashplates at 0,0,0 degree
 		.platetype = 1,				// SwashPlateType H90 = 0, H120 = 1, custom = 2
 		.rotationleft = 300,		// scaling 10 = 1degree
@@ -133,17 +133,17 @@ void flettnerMixer()
 
 
     /*
-    	int16_t nicktravel;  	// scaling 10 = 1%
+    	int16_t pitchtravel;  	// scaling 10 = 1%
     	int16_t rolltravel;  	// scaling 10 = 1%
-    	int16_t pitchtravel;	// scaling 10 = 1%
+    	int16_t collectivetravel;	// scaling 10 = 1%
     	int16_t cyclicring;		// scaling 100 = 1degree
-    	int16_t pitchmax;		// scaling 100 = 1degree
-    	int16_t pitchmin;		// scaling 100 = 1degree
+    	int16_t collectivemax;		// scaling 100 = 1degree
+    	int16_t collectivemin;		// scaling 100 = 1degree
     	int16_t cyclicmix;		  	// scaling 10 = 1%
     	int16_t collectivemix;	  	// scaling 10 = 1%
     	int16_t collectivemixthreshold;	// scaling 100 = 1degree
     	int16_t collectivemixmax;		// scaling 100 = 1degree
-    	int16_t nickdma;	  	// scaling 100 = 1%
+    	int16_t pitchff;	  	// scaling 100 = 1%
     	int16_t centerall;		// assume swashplates at 0,0,0 degree
     	int16_t collectivoffset;	// scaling 100 = 1degree;
     */
@@ -154,7 +154,7 @@ void flettnerMixer()
     swashPlates[SwashRight].roll = swashPlates[SwashLeft].roll;
 
     // NICK plus dma
-    lX1 = ( mixerFlettnerMutable()->nicktravel * pitch + (collective *  mixerFlettnerMutable()->nickdma) / 4);
+    lX1 = ( mixerFlettnerMutable()->pitchtravel * pitch + (collective *  mixerFlettnerMutable()->pitchff) / 4);
 
     // cyclic differential YAW control
     swashPlates[SwashLeft].pitch = (int16_t)((lX1 - ( mixerFlettnerMutable()->cyclicmix * yaw))/512);
@@ -174,10 +174,10 @@ void flettnerMixer()
 		}
     }
     // PITCH
-    lX1 = ( mixerFlettnerMutable()->pitchtravel * collective) + 512 *  mixerFlettnerMutable()->collectivoffset; // 10000 per degree
+    lX1 = ( mixerFlettnerMutable()->collectivetravel * collective) + 512 *  mixerFlettnerMutable()->collectivoffset; // 10000 per degree
 
 
-    //swashPlates[SWASH123].throttle = (cfg.swash_mix.pitchtravel * collective + cfg.swash_mix.nickdma * pitch)/64; // approx 16degree per 1000 LSB
+    //swashPlates[SWASH123].throttle = (cfg.swash_mix.collectivetravel * collective + cfg.swash_mix.pitchff * pitch)/64; // approx 16degree per 1000 LSB
     //swashPlates[SWASH456].throttle = swashPlates[SWASH123].throttle;
 
 	lX2 = 0;
@@ -198,8 +198,8 @@ void flettnerMixer()
 
     // limit to pitch min and max
 
-    swashPlates[SwashLeft].collective = constrain(swashPlates[SwashLeft].collective,  mixerFlettnerMutable()->pitchmin,  mixerFlettnerMutable()->pitchmax);
-    swashPlates[SwashRight].collective = constrain(swashPlates[SwashRight].collective,  mixerFlettnerMutable()->pitchmin,  mixerFlettnerMutable()->pitchmax);
+    swashPlates[SwashLeft].collective = constrain(swashPlates[SwashLeft].collective,  mixerFlettnerMutable()->collectivemin,  mixerFlettnerMutable()->collectivemax);
+    swashPlates[SwashRight].collective = constrain(swashPlates[SwashRight].collective,  mixerFlettnerMutable()->collectivemin,  mixerFlettnerMutable()->collectivemax);
 
     if ( mixerFlettnerMutable()->centerall > 0)
 	{
@@ -218,9 +218,9 @@ void flettnerMixer()
     	for(i = 0 ; i < 3; i++)
     	{
     		int si = i + 3 * (p - SwashLeft); // servo index 0..2 on swash left, servo 3..5 on swash right
-    		lX2 = swashPlates[p].collective * flettnerSwashServos(i)->collective/2 +
-    			  swashPlates[p].pitch    * flettnerSwashServos(i)->pitch +
-        		  swashPlates[p].roll     * flettnerSwashServos(i)->roll;
+    		lX2 = swashPlates[p].collective * flettnerSwashServos(si)->collective/2 +
+    			  swashPlates[p].pitch    * flettnerSwashServos(si)->pitch +
+        		  swashPlates[p].roll     * flettnerSwashServos(si)->roll;
     		servo[si] = lX2 / 1000;
     	}
     }
@@ -239,4 +239,10 @@ void flettnerMixer()
         servo[i] = constrain(servo[i], servoParams(i)->min, servoParams(i)->max);
     }
 
+}
+
+
+bool isMixerUsingFlettner(void)
+{
+    return (mixerConfig()->platformType == PLATFORM_FLETTNER);
 }

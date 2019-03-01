@@ -132,6 +132,9 @@ void mixerUpdateStateFlags(void)
     } else if (mixerConfig()->platformType == PLATFORM_HELICOPTER) {
         DISABLE_STATE(FIXED_WING);
         ENABLE_STATE(HELICOPTER);
+    } else  if (mixerConfig()->platformType == PLATFORM_FLETTNER) {
+        ENABLE_STATE(FIXED_WING);
+        DISABLE_STATE(HELICOPTER);
     } else {
         DISABLE_STATE(FIXED_WING);
         DISABLE_STATE(HELICOPTER);

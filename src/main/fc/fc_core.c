@@ -753,9 +753,9 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
 
     mixTable(dT);
 
-   //if (isMixerUsingFlettner()) {
+    if (isMixerUsingFlettner()) {
     	flettnerMixer();
-//    }
+    }
 
     if (isMixerUsingServos()) {
         servoMixer(dT);

@@ -26,17 +26,17 @@ typedef struct swashPlate_s {
 extern swashPlate_t swashPlates[2];
 
 typedef struct mixerflettner_s {
-	int16_t nicktravel;  	// scaling 10 = 1%
+	int16_t pitchtravel;  	// scaling 10 = 1%
 	int16_t rolltravel;  	// scaling 10 = 1%
-	int16_t pitchtravel;	// scaling 10 = 1%
+	int16_t collectivetravel;	// scaling 10 = 1%
 	int16_t cyclicring;		// scaling 100 = 1degree
-	int16_t pitchmax;		// scaling 100 = 1degree
-	int16_t pitchmin;		// scaling 100 = 1degree
+	int16_t collectivemax;		// scaling 100 = 1degree
+	int16_t collectivemin;		// scaling 100 = 1degree
 	int16_t cyclicmix;		  	// scaling 10 = 1%
 	int16_t collectivemix;	  	// scaling 10 = 1%
 	int16_t collectivemixthreshold;	// scaling 100 = 1degree
 	int16_t collectivemixmax;		// scaling 100 = 1degree
-	int16_t nickdma;	  	// scaling 10 = 1%
+	int16_t pitchff;	  	// scaling 10 = 1%
 	int16_t centerall;		// assume swashplates at 0,0,0 degree
 	int16_t platetype;		// SwashPlateType H90 = 0, H120 = 1, custom = 2
 	int16_t rotationleft;	// scaling 10 = 1degree
@@ -69,10 +69,10 @@ typedef struct mixertilt_s {
 	int16_t nacellemin;					//30.00,	// plane mode nacelle position [deg]
 	int16_t nacellespeed;				// 7.00,	// nacelle turn rate [deg/sec]
 	int16_t cyclicring; 				// 8.00,	// cyclic ring max deflection
-	int16_t pitchmaxheli;				//14.00,	// max pitch in heli mode [deg]
-	int16_t pitchmaxplane;				//26.00,	// max pitch in plane mode [deg]
-	int16_t pitchminheli;				//-4.00,	// min pitch in heli mode [deg]
-	int16_t pitchminplane;				// 2.00,	// min pitch in plane mode [deg]
+	int16_t collectivemaxheli;				//14.00,	// max pitch in heli mode [deg]
+	int16_t collectivemaxplane;				//26.00,	// max pitch in plane mode [deg]
+	int16_t collectiveminheli;				//-4.00,	// min pitch in heli mode [deg]
+	int16_t collectiveminplane;				// 2.00,	// min pitch in plane mode [deg]
 	int16_t gainnickheli;				//70.00,	// nick gain in heli mode [%]
 	int16_t gainnickplane;				//50.00,	// nick gain in heli mode [%]
 	int16_t gaindiffcollheli;			//50.00,	// diffcoll gain in heli mode [%]
@@ -95,8 +95,8 @@ typedef struct tiltlive_s {
 	int16_t gainnick;					//70.00,
 	int16_t gaindiffcoll;				//70.00,
 	int16_t gaindiffnick;				//70.00,
-	int16_t pitchmin;					//-4.00,
-	int16_t pitchmax;					//14.00,
+	int16_t collectivemin;					//-4.00,
+	int16_t collectivemax;					//14.00,
 	int16_t pitchact;					//-2.00,
 	int16_t spare1;						//0.00,
 	int16_t spare2;						//0.00
