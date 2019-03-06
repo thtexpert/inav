@@ -1451,8 +1451,8 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         sbufWriteU16(dst, mixerFlettnerMutable()->virtualrotleft);	// scaling 10 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->virtualrotright);	// scaling 10 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->cyclictravel);	// scaling 10 = 1%
-        sbufWriteU16(dst, mixerFlettnerMutable()->collectivtravel);	// scaling 10 = 1%
-        sbufWriteU16(dst, mixerFlettnerMutable()->collectivoffset); // scaling 100 = 1degree
+        sbufWriteU16(dst, mixerFlettnerMutable()->collectivetravel);	// scaling 10 = 1%
+        sbufWriteU16(dst, mixerFlettnerMutable()->collectiveoffset); // scaling 100 = 1degree
     	break;
     case MSP2_FLETTNER_SERVO_MIX: // READ
         for (int i = 0; i < 6; i++) {
@@ -1462,48 +1462,45 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         }
 		break;
     case MSP2_TILT_SETUP:  // tilt rotor setup read
-    	/*
-        headSerialReply(17 * 2);
-    	serialize16(cfg.tiltsetup.nacellemax);					//90.00,	// heli mode nacelle position [deg]
-    	serialize16(cfg.tiltsetup.nacellemin);					//30.00,	// plane mode nacelle position [deg]
-    	serialize16(cfg.tiltsetup.nacellespeed);				// 7.00,	// nacelle turn rate [deg/sec]
-    	serialize16(cfg.tiltsetup.cyclicring); 				// 8.00,	// cyclic ring max deflection
-    	serialize16(cfg.tiltsetup.collectivemaxheli);				//14.00,	// max pitch in heli mode [deg]
-    	serialize16(cfg.tiltsetup.collectivemaxplane);				//26.00,	// max pitch in plane mode [deg]
-    	serialize16(cfg.tiltsetup.collectiveminheli);				//-4.00,	// min pitch in heli mode [deg]
-    	serialize16(cfg.tiltsetup.collectiveminplane);				// 2.00,	// min pitch in plane mode [deg]
-    	serialize16(cfg.tiltsetup.gainnickheli);				//70.00,	// nick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gainnickplane);				//50.00,	// nick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffcollheli);			//50.00,	// diffcoll gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffcollplane);			//45.00,	// diffcoll gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffnickheli);			//40.00,	// diffnick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffnickplane);			//0.00,	// diffnick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.centerall); 					//0,
-    	serialize16(cfg.tiltsetup.spare1);						//0.00,
-    	serialize16(cfg.tiltsetup.spare2);						//0.00
-    	*/
+    	sbufWriteU16(dst, mixerTiltMutable()->nacellemax);					//90.00,	// heli mode nacelle position [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->nacellemin);					//30.00,	// plane mode nacelle position [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->nacellespeed);				// 7.00,	// nacelle turn rate [deg/sec]
+    	sbufWriteU16(dst, mixerTiltMutable()->cyclicring); 				// 8.00,	// cyclic ring max deflection
+    	sbufWriteU16(dst, mixerTiltMutable()->collectivemaxheli);				//14.00,	// max pitch in heli mode [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->collectivemaxplane);				//26.00,	// max pitch in plane mode [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->collectiveminheli);				//-4.00,	// min pitch in heli mode [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->collectiveminplane);				// 2.00,	// min pitch in plane mode [deg]
+    	sbufWriteU16(dst, mixerTiltMutable()->gainpitchheli);					//70.00,	// nick gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->gainpitchplane);			//50.00,	// nick gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->gaindiffcollheli);			//50.00,	// diffcoll gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->gaindiffcollplane);			//50.00,	// diffcoll gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->gaindiffpitchheli);			//45.00,	// diffcoll gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->gaindiffpitchplane);			//40.00,	// diffnick gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->centerall); 					//0.00,	// diffnick gain in heli mode [%]
+    	sbufWriteU16(dst, mixerTiltMutable()->platetype);				//0,
+        sbufWriteU16(dst, mixerTiltMutable()->cyclictravel);	// scaling 10 = 1%
+        sbufWriteU16(dst, mixerTiltMutable()->collectivetravel);	// scaling 10 = 1%
+    	sbufWriteU16(dst, mixerTiltMutable()->nacelletype);				//0,
+    	sbufWriteU16(dst, mixerTiltMutable()->spare2);						//0.00
     	break;
     case MSP2_TILT_LIVE:  // tilt rotor live data read
-    	/*
-        headSerialReply(13 * 2);
-    	serialize16(tiltlive.nacelle);					//90.00,
-    	serialize16(tiltlive.leftnick);					// 0.00,
-    	serialize16(tiltlive.leftpitch);					//-2.00,
-    	serialize16(tiltlive.rightnick);					// 0.00,
-    	serialize16(tiltlive.rightpitch);					//-2.00,
-    	serialize16(tiltlive.gainnick);					//70.00,
-    	serialize16(tiltlive.gaindiffcoll);				//70.00,
-    	serialize16(tiltlive.gaindiffnick);				//70.00,
-    	serialize16(tiltlive.collectivemin);					//-4.00,
-    	serialize16(tiltlive.collectivemax);					//14.00,
-    	serialize16(tiltlive.pitchact);					//-2.00,
-    	serialize16(tiltlive.spare1);						//0.00,
-    	serialize16(tiltlive.spare2);						//0.00
-    	*/
+    	sbufWriteU16(dst, tiltlive.nacelle);					//90.00,
+    	sbufWriteU16(dst, tiltlive.leftpitch);					// 0.00,
+    	sbufWriteU16(dst, tiltlive.leftcollective);				//-2.00,
+    	sbufWriteU16(dst, tiltlive.rightpitch);					// 0.00,
+    	sbufWriteU16(dst, tiltlive.rightcollective);			//-2.00,
+    	sbufWriteU16(dst, tiltlive.gainpitch);					//70.00,
+    	sbufWriteU16(dst, tiltlive.gaindiffcoll);				//70.00,
+    	sbufWriteU16(dst, tiltlive.gaindiffpitch);				//70.00,
+    	sbufWriteU16(dst, tiltlive.collectivemin);					//-4.00,
+    	sbufWriteU16(dst, tiltlive.collectivemax);					//14.00,
     	break;
     case MSP2_TILT_SERVO_MIX:
-    	break;
-
+        for (int i = 0; i < 6; i++) {
+        	sbufWriteU16(dst, tiltSwashServos(i)->pitch);  	// scaling 10 = 1%
+        	sbufWriteU16(dst, tiltSwashServos(i)->collective);  	// scaling 10 = 1%
+        }
+		break;
     default:
         return false;
     }
@@ -2679,8 +2676,8 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
     	mixerFlettnerMutable()->virtualrotleft = sbufReadU16(src);		// scaling 10 = 1degree
     	mixerFlettnerMutable()->virtualrotright = sbufReadU16(src);		// scaling 10 = 1degree
     	mixerFlettnerMutable()->cyclictravel = sbufReadU16(src);			// scaling 10 = 1%
-    	mixerFlettnerMutable()->collectivtravel = sbufReadU16(src);		// scaling 10 = 1%
-    	mixerFlettnerMutable()->collectivoffset = sbufReadU16(src);		// scaling 100 = 1degree
+    	mixerFlettnerMutable()->collectivetravel = sbufReadU16(src);		// scaling 10 = 1%
+    	mixerFlettnerMutable()->collectiveoffset = sbufReadU16(src);		// scaling 100 = 1degree
     	break;
 
     case MSP2_FLETTNER_SET_SERVO_MIX: // READ
@@ -2691,36 +2688,34 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
         }
  		break;
     case MSP2_TILT_SET_SETUP:
-    	/*
-        headSerialReply(0);
-    	cfg.tiltsetup.nacellemax  = read16();					//90.00,	// heli mode nacelle position [deg]
-    	cfg.tiltsetup.nacellemin  = read16();					//30.00,	// plane mode nacelle position [deg]
-    	cfg.tiltsetup.nacellespeed  = read16();				// 7.00,	// nacelle turn rate [deg/sec]
-    	cfg.tiltsetup.cyclicring  = read16(); 				// 8.00,	// cyclic ring max deflection
-    	cfg.tiltsetup.collectivemaxheli  = read16();				//14.00,	// max pitch in heli mode [deg]
-    	cfg.tiltsetup.collectivemaxplane  = read16();				//26.00,	// max pitch in plane mode [deg]
-    	cfg.tiltsetup.collectiveminheli  = read16();				//-4.00,	// min pitch in heli mode [deg]
-    	cfg.tiltsetup.collectiveminplane  = read16();				// 2.00,	// min pitch in plane mode [deg]
-    	cfg.tiltsetup.gainnickheli  = read16();				//70.00,	// nick gain in heli mode [%]
-    	cfg.tiltsetup.gainnickplane  = read16();				//50.00,	// nick gain in heli mode [%]
-    	cfg.tiltsetup.gaindiffcollheli  = read16();			//50.00,	// diffcoll gain in heli mode [%]
-    	cfg.tiltsetup.gaindiffcollplane  = read16();			//45.00,	// diffcoll gain in heli mode [%]
-    	cfg.tiltsetup.gaindiffnickheli  = read16();			//40.00,	// diffnick gain in heli mode [%]
-    	cfg.tiltsetup.gaindiffnickplane  = read16();			//0.00,	// diffnick gain in heli mode [%]
-    	cfg.tiltsetup.centerall  = read16(); 					//0,
-    	cfg.tiltsetup.spare1  = read16();						//0.00,
-    	cfg.tiltsetup.spare2  = read16();						//0.00
-    	*/
+    	mixerTiltMutable()->nacellemax			= sbufReadU16(src);					//90.00,	// heli mode nacelle position [deg]
+    	mixerTiltMutable()->nacellemin			= sbufReadU16(src);					//30.00,	// plane mode nacelle position [deg]
+    	mixerTiltMutable()->nacellespeed		= sbufReadU16(src);				// 7.00,	// nacelle turn rate [deg/sec]
+    	mixerTiltMutable()->cyclicring 			= sbufReadU16(src);				// 8.00,	// cyclic ring max deflection
+    	mixerTiltMutable()->collectivemaxheli	= sbufReadU16(src);				//14.00,	// max pitch in heli mode [deg]
+    	mixerTiltMutable()->collectivemaxplane	= sbufReadU16(src);				//26.00,	// max pitch in plane mode [deg]
+    	mixerTiltMutable()->collectiveminheli	= sbufReadU16(src);				//-4.00,	// min pitch in heli mode [deg]
+    	mixerTiltMutable()->collectiveminplane	= sbufReadU16(src);				// 2.00,	// min pitch in plane mode [deg]
+    	mixerTiltMutable()->gainpitchheli		= sbufReadU16(src);				//70.00,	// nick gain in heli mode [%]
+    	mixerTiltMutable()->gainpitchplane		= sbufReadU16(src);				//50.00,	// nick gain in plane mode [%]
+		mixerTiltMutable()->gaindiffcollheli	= sbufReadU16(src);			//50.00,	// diffcoll gain in heli mode [%]
+		mixerTiltMutable()->gaindiffcollplane	= sbufReadU16(src);			//50.00,	// diffcoll gain in plane mode [%]
+    	mixerTiltMutable()->gaindiffpitchheli	= sbufReadU16(src);			//45.00,	// diffcoll gain in heli mode [%]
+    	mixerTiltMutable()->gaindiffpitchplane	= sbufReadU16(src);			//40.00,	// diffnick gain in plane mode [%]
+    	mixerTiltMutable()->centerall 			= sbufReadU16(src);			//0.00,	//
+    	mixerTiltMutable()->platetype		= sbufReadU16(src); 					//0,
+    	mixerTiltMutable()->cyclictravel = sbufReadU16(src);			// scaling 10 = 1%
+    	mixerTiltMutable()->collectivetravel = sbufReadU16(src);		// scaling 10 = 1%
+    	mixerTiltMutable()->nacelletype		= sbufReadU16(src); 					//0,
+    	mixerTiltMutable()->spare2				= sbufReadU16(src); 					//0.00,
     	break;
     case MSP2_TILT_SET_SERVO_MIX: // READ
-    	/*
-        headSerialReply(0);
-        for (i = 0; i < 6; i++) {
-        	cfg.swash_servo_mix.servo[i].roll   = sbufReadU16(src); 	// scaling 10 = 1%
-        	cfg.swash_servo_mix.servo[i].nick  = read16();  	// scaling 10 = 1%
-        	cfg.swash_servo_mix.servo[i].pitch = read16();  	// scaling 10 = 1%
-        }
-        */
+        for (int i = 0; i < 6; i++) {
+     	    tiltSwashServosMutable(i)->roll       = 0; 	// scaling 10 = 1%
+     	    tiltSwashServosMutable(i)->pitch      = sbufReadU16(src); 	// scaling 10 = 1%
+     	    tiltSwashServosMutable(i)->collective = sbufReadU16(src); 	// scaling 10 = 1%
+         }
+  		break;
 		break;
 
 #if defined(USE_OSD)
@@ -2832,85 +2827,6 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
         break;
 #endif
 
-    	/* TODO
-    case MSP2_FLETTNER_SWASH:
-        headSerialReply(SWASHLAST * 2 * 3);
-        for (i = 0; i < SWASHLAST; i++) {
-            serialize16(swashPlates[i].throttle);
-            serialize16(swashPlates[i].pitch);
-            serialize16(swashPlates[i].roll);
-        }
-    	break;
-    case MSP2_FLETTNER_SWASH_MIX: // READ
-        headSerialReply(20 * 2);
-        serialize16(cfg.swash_mix.pitchtravel);  	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.rolltravel);  	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.collectivetravel);	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.cyclicring);		// scaling 100 = 1degree
-        serialize16(cfg.swash_mix.collectivemax);		// scaling 100 = 1degree
-        serialize16(cfg.swash_mix.collectivemin);	// scaling 100 = 1degree
-        serialize16(cfg.swash_mix.cyclicmix);		  	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.collectivemix);	  	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.collectivemixthreshold);	// scaling 100 = 1degree
-        serialize16(cfg.swash_mix.collectivemixmax);		// scaling 100 = 1degree
-        serialize16(cfg.swash_mix.pitchff);	  	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.centerall);		// assume swashplates at 0,0,0 degree
-        serialize16(cfg.swash_mix.platetype);		// SwashPlateType H90 = 0, H120 = 1, custom = 2
-        serialize16(cfg.swash_mix.rotationleft);	// scaling 10 = 1degree
-        serialize16(cfg.swash_mix.rotationright);	// scaling 10 = 1degree
-        serialize16(cfg.swash_mix.virtualrotleft);	// scaling 10 = 1degree
-        serialize16(cfg.swash_mix.virtualrotright);	// scaling 10 = 1degree
-        serialize16(cfg.swash_mix.cyclictravel);	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.collectivtravel);	// scaling 10 = 1%
-        serialize16(cfg.swash_mix.collectivoffset); // scaling 100 = 1degree
-    	break;
-    case MSP2_FLETTNER_SERVO_MIX: // READ
-        headSerialReply(6 * 2 * 3);
-        for (i = 0; i < 6; i++) {
-        	serialize16(cfg.swash_servo_mix.servo[i].roll);  	// scaling 10 = 1%
-        	serialize16(cfg.swash_servo_mix.servo[i].nick);  	// scaling 10 = 1%
-        	serialize16(cfg.swash_servo_mix.servo[i].pitch);  	// scaling 10 = 1%
-        }
-		break;
-    case MSP2_TILT_SETUP:  // tilt rotor setup read
-        headSerialReply(17 * 2);
-    	serialize16(cfg.tiltsetup.nacellemax);					//90.00,	// heli mode nacelle position [deg]
-    	serialize16(cfg.tiltsetup.nacellemin);					//30.00,	// plane mode nacelle position [deg]
-    	serialize16(cfg.tiltsetup.nacellespeed);				// 7.00,	// nacelle turn rate [deg/sec]
-    	serialize16(cfg.tiltsetup.cyclicring); 				// 8.00,	// cyclic ring max deflection
-    	serialize16(cfg.tiltsetup.collectivemaxheli);				//14.00,	// max pitch in heli mode [deg]
-    	serialize16(cfg.tiltsetup.collectivemaxplane);				//26.00,	// max pitch in plane mode [deg]
-    	serialize16(cfg.tiltsetup.collectiveminheli);				//-4.00,	// min pitch in heli mode [deg]
-    	serialize16(cfg.tiltsetup.collectiveminplane);				// 2.00,	// min pitch in plane mode [deg]
-    	serialize16(cfg.tiltsetup.gainnickheli);				//70.00,	// nick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gainnickplane);				//50.00,	// nick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffcollheli);			//50.00,	// diffcoll gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffcollplane);			//45.00,	// diffcoll gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffnickheli);			//40.00,	// diffnick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.gaindiffnickplane);			//0.00,	// diffnick gain in heli mode [%]
-    	serialize16(cfg.tiltsetup.centerall); 					//0,
-    	serialize16(cfg.tiltsetup.spare1);						//0.00,
-    	serialize16(cfg.tiltsetup.spare2);						//0.00
-    	break;
-    case MSP2_TILT_LIVE:  // tilt rotor live data read
-        headSerialReply(13 * 2);
-    	serialize16(tiltlive.nacelle);					//90.00,
-    	serialize16(tiltlive.leftnick);					// 0.00,
-    	serialize16(tiltlive.leftpitch);					//-2.00,
-    	serialize16(tiltlive.rightnick);					// 0.00,
-    	serialize16(tiltlive.rightpitch);					//-2.00,
-    	serialize16(tiltlive.gainnick);					//70.00,
-    	serialize16(tiltlive.gaindiffcoll);				//70.00,
-    	serialize16(tiltlive.gaindiffnick);				//70.00,
-    	serialize16(tiltlive.collectivemin);					//-4.00,
-    	serialize16(tiltlive.collectivemax);					//14.00,
-    	serialize16(tiltlive.pitchact);					//-2.00,
-    	serialize16(tiltlive.spare1);						//0.00,
-    	serialize16(tiltlive.spare2);						//0.00
-    	break;
-    case MSP2_TILT_SERVO_MIX:
-    	break;
-        */
     default:
         return MSP_RESULT_ERROR;
     }

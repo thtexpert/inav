@@ -76,9 +76,7 @@
 #define PG_VTX_CONFIG 54
 #define PG_ELERES_CONFIG 55
 #define PG_TEMP_SENSOR_CONFIG 56
-#define PG_MIXER_FLETTNER 57
-#define PG_FLETTNER_SWASH_SERVOS 58
-#define PG_CF_END 59
+#define PG_CF_END 57
 
 // Driver configuration
 //#define PG_DRIVER_PWM_RX_CONFIG 100
@@ -105,7 +103,11 @@
 #define PG_DISPLAY_CONFIG 1013
 #define PG_LIGHTS_CONFIG 1014
 #define PG_PINIOBOX_CONFIG 1015
-#define PG_INAV_END 1015
+#define PG_MIXER_FLETTNER 1016
+#define PG_FLETTNER_SWASH_SERVOS 1017
+#define PG_MIXER_TILT 1018
+#define PG_TILT_SWASH_SERVOS 1019
+#define PG_INAV_END 1019
 
 // OSD configuration (subject to change)
 //#define PG_OSD_FONT_CONFIG 2047

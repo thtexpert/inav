@@ -46,3 +46,4 @@ bool pwmMotorConfig(const struct timerHardware_s *timerHardware, uint8_t motorIn
 bool pwmServoConfig(const struct timerHardware_s *timerHardware, uint8_t servoIndex, uint16_t servoPwmRate, uint16_t servoCenterPulse, bool enableOutput);
 void pwmWriteBeeper(bool onoffBeep);
 void beeperPwmInit(ioTag_t tag, uint16_t frequency);
+void overwriteServoPwmRate(uint8_t servoIndex, uint16_t servoPwmRate);

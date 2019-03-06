@@ -44,8 +44,7 @@ typedef struct mixerflettner_s {
 	int16_t virtualrotleft;	// scaling 10 = 1degree
 	int16_t virtualrotright;	// scaling 10 = 1degree
 	int16_t cyclictravel;	// scaling 10 = 1%
-	int16_t collectivtravel;	// scaling 10 = 1%
-	int16_t collectivoffset;	// scaling 100 = 1degree;
+	int16_t collectiveoffset;	// scaling 100 = 1degree;
 } mixerflettner_t;
 
 PG_DECLARE(mixerflettner_t, mixerFlettner);
@@ -60,50 +59,64 @@ typedef struct servoSwash_s {
 
 PG_DECLARE_ARRAY(servoSwash_t, MAX_FLETTNER_SWASH_SERVOS, flettnerSwashServos);
 
+
+// ------------ tilt rotor -------------
+
+
 typedef struct mixertilt_s {
-//    int16_t min;                            // servo min, for tilt the heli position
-//    int16_t max;                            // servo max , for tilt the plane position
-//    int16_t middle;                         // servo middle
-//    int16_t rate;                            // range [-100;+100] ; can be used to ajust a rate 0-100% and a direction
 	int16_t nacellemax;					//90.00,	// heli mode nacelle position [deg]
 	int16_t nacellemin;					//30.00,	// plane mode nacelle position [deg]
 	int16_t nacellespeed;				// 7.00,	// nacelle turn rate [deg/sec]
 	int16_t cyclicring; 				// 8.00,	// cyclic ring max deflection
-	int16_t collectivemaxheli;				//14.00,	// max pitch in heli mode [deg]
-	int16_t collectivemaxplane;				//26.00,	// max pitch in plane mode [deg]
-	int16_t collectiveminheli;				//-4.00,	// min pitch in heli mode [deg]
-	int16_t collectiveminplane;				// 2.00,	// min pitch in plane mode [deg]
-	int16_t gainnickheli;				//70.00,	// nick gain in heli mode [%]
-	int16_t gainnickplane;				//50.00,	// nick gain in heli mode [%]
-	int16_t gaindiffcollheli;			//50.00,	// diffcoll gain in heli mode [%]
+	int16_t collectivemaxheli;			//14.00,	// max pitch in heli mode [deg]
+	int16_t collectivemaxplane;			//26.00,	// max pitch in plane mode [deg]
+	int16_t collectiveminheli;			//-4.00,	// min pitch in heli mode [deg]
+	int16_t collectiveminplane;			// 2.00,	// min pitch in plane mode [deg]
+	int16_t gainpitchheli;				//70.00,	// nick gain in heli mode [%]
+	int16_t gainpitchplane;			//50.00,	// diffcoll gain in heli mode [%]
+	int16_t gaindiffcollheli;			//45.00,	// diffcoll gain in heli mode [%]
 	int16_t gaindiffcollplane;			//45.00,	// diffcoll gain in heli mode [%]
-	int16_t gaindiffnickheli;			//40.00,	// diffnick gain in heli mode [%]
-	int16_t gaindiffnickplane;			//0.00,	// diffnick gain in heli mode [%]
+	int16_t gaindiffpitchheli;			//40.00,	// diffnick gain in heli mode [%]
+	int16_t gaindiffpitchplane;			//0.00,	// diffnick gain in heli mode [%]
 	int16_t centerall; 					//0,
-	int16_t spare1;						//0.00,
+	int16_t platetype;					// 0 (normal), 1 (custom)
+	int16_t cyclictravel;				// scaling 10 = 1%
+	int16_t collectivetravel;			// scaling 10 = 1%
+	int16_t nacelletype;				// 0, 1 , 2 for NONE, SINGLE, DUAL
 	int16_t spare2;						//0.00
 } mixertilt_t;
 
 PG_DECLARE(mixertilt_t, mixerTilt);
 
+// index 4 and 5 store nacelle servo postions for heli and plane
+#define MAX_TILT_SWASH_SERVOS (6)
+
+
+PG_DECLARE_ARRAY(servoSwash_t, MAX_TILT_SWASH_SERVOS, tiltSwashServos);
+
 typedef struct tiltlive_s {
 	int16_t nacelle;					//90.00,
-	int16_t leftnick;					// 0.00,
-	int16_t leftpitch;					//-2.00,
-	int16_t rightnick;					// 0.00,
-	int16_t rightpitch;					//-2.00,
-	int16_t gainnick;					//70.00,
+	int16_t leftpitch;					// 0.00,
+	int16_t leftcollective;					//-2.00,
+	int16_t rightpitch;					// 0.00,
+	int16_t rightcollective;					//-2.00,
+	int16_t gainpitch;					//70.00,
 	int16_t gaindiffcoll;				//70.00,
-	int16_t gaindiffnick;				//70.00,
+	int16_t gaindiffpitch;				//70.00,
 	int16_t collectivemin;					//-4.00,
 	int16_t collectivemax;					//14.00,
-	int16_t pitchact;					//-2.00,
-	int16_t spare1;						//0.00,
-	int16_t spare2;						//0.00
+	//int16_t pitchact;					//-2.00,
+	//int16_t spare1;						//0.00,
+	//int16_t spare2;						//0.00
 } tiltlive_t;
 
+extern tiltlive_t tiltlive; // live data from tilt rotor control
 
 bool isMixerUsingFlettner(void);
 void flettnerMixer(void);
+
+void nacelle_control(timeDelta_t looptime);
+bool isMixerUsingTiltrotor(void);
+void tiltrotorMixer(void);
 
 #endif /* SRC_MAIN_FLIGHT_MIXER_TWIN_H_ */

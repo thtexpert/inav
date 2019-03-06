@@ -41,8 +41,8 @@ The Flettner platform inherits all features, limitations and capabilities from t
 | `flettner_virtualrotleft` | Provide info for configurator how the servos of left swash plate are virtually rotated relative to regular rotation (scaling 10 = 1degree). Configurator is able to set individual servo mixes (fmix) for each servo. |
 | `flettner_virtualrotright` | Provide info for configurator how the servos of right swash plate are virtually rotated relative to regular rotation (scaling 10 = 1degree). Configurator is able to set individual servo mixes (fmix) for each servo. |
 | `flettner_cyclictravel` | Provide info for configurator how much and which direction the servos move for swash plate changes (scaling 10 = 1%). Configurator is able to set individual servo mixes (fmix) for each servo. Use this parameter to match _Swash Plate Mixer_ degree to real blade degrees |
-| `flettner_collectivtravel` | Provide info for configurator how much and which direction the servos move for swash plate changes (scaling 10 = 1%). Configurator is able to set individual servo mixes (fmix) for each servo. Use this parameter to match _Swash Plate Mixer_ degree to real blade degrees |
-| `flettner_collectivoffset` | Collective angle at center of collective stick. Allows full usage of collective stick travel for non symmetric blade angles.(scaling 100 = 1degree) |
+| `flettner_collectivetravel` | Provide info for configurator how much and which direction the servos move for swash plate changes (scaling 10 = 1%). Configurator is able to set individual servo mixes (fmix) for each servo. Use this parameter to match _Swash Plate Mixer_ degree to real blade degrees |
+| `flettner_collectiveoffset` | Collective angle at center of collective stick. Allows full usage of collective stick travel for non symmetric blade angles.(scaling 100 = 1degree) |
 | `fmix 0 <roll> <pitch> <collective>` | mixing of left swash plate roll, pitch and collective to servo number 1 (scaling 10 = 1%) |
 | `fmix 1 <roll> <pitch> <collective>` | mixing of left swash plate roll, pitch and collective to servo number 2 (scaling 10 = 1%) |
 | `fmix 2 <roll> <pitch> <collective>` | mixing of left swash plate roll, pitch and collective to servo number 3 (scaling 10 = 1%) |
@@ -57,4 +57,7 @@ The Flettner platform inherits all features, limitations and capabilities from t
 `set platform_type = FLETTNER`
 
 `set servo_pwm_rate = 120`
+
+`set min_check = 1000`  to avoid yaw locking at low pitch
+
 

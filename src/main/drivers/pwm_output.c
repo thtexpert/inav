@@ -394,6 +394,14 @@ void pwmWriteServo(uint8_t index, uint16_t value)
 #endif
 }
 
+void overwriteServoPwmRate(uint8_t servoIndex, uint16_t servoPwmRate)
+{
+	pwmOutputPort_t * port  = servos[servoIndex];
+	if (port) {
+		timerConfigBase( port->tch, PWM_TIMER_HZ, PWM_TIMER_HZ / servoPwmRate);
+	}
+}
+
 #ifdef BEEPER_PWM
 void pwmWriteBeeper(bool onoffBeep)
 {

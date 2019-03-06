@@ -711,7 +711,7 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
     // Allow yaw control for tricopters if the user wants the servo to move even when unarmed.
     if (isUsingSticksForArming() && rcData[THROTTLE] <= rxConfig()->mincheck
             && !((mixerConfig()->platformType == PLATFORM_TRICOPTER) && servoConfig()->tri_unarmed_servo)
-            && mixerConfig()->platformType != PLATFORM_AIRPLANE
+            && !STATE(FIXED_WING)
     ) {
         rcCommand[YAW] = 0;
     }
@@ -753,12 +753,21 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
 
     mixTable(dT);
 
+    int firstfreeservo = 0;
+
     if (isMixerUsingFlettner()) {
     	flettnerMixer();
+    	firstfreeservo = MAX_FLETTNER_SWASH_SERVOS;
+    }
+
+    if (isMixerUsingTiltrotor()) {
+    	nacelle_control(cycleTime);
+    	tiltrotorMixer();
+    	firstfreeservo = MAX_TILT_SWASH_SERVOS - 2 + mixerTiltMutable()->nacelletype;
     }
 
     if (isMixerUsingServos()) {
-        servoMixer(dT);
+        servoMixer(dT, firstfreeservo);
         processServoAutotrim();
     }
 

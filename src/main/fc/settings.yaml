@@ -1863,11 +1863,89 @@ groups:
         field: cyclictravel
         min: -2000
         max: 2000
-      - name: flettner_collectivtravel
-        field: collectivtravel
-        min: -2000
-        max: 2000
-      - name: flettner_collectivoffset
-        field: collectivoffset
+      - name: flettner_collectiveoffset
+        field: collectiveoffset
         min: -1000
         max: 1000
+        
+  - name: PG_MIXER_TILT
+    type: mixertilt_t
+    headers: ["flight/mixer_twin.h"]
+    members:
+      - name: tilt_nacellemax
+        field: nacellemax
+        min: -1000
+        max: 10000
+      - name: tilt_nacellemin
+        field: nacellemin
+        min: -1000
+        max: 10000
+      - name: tilt_nacellespeed
+        field: nacellespeed
+        min: 10
+        max: 12000
+      - name: tilt_cyclicring
+        field: cyclicring
+        min: 50
+        max: 2000
+      - name: tilt_collectivemaxheli
+        field: collectivemaxheli
+        min: -1000
+        max: 5000
+      - name: tilt_collectivemaxplane
+        field: collectivemaxplane
+        min: -1000
+        max: 5000
+      - name: tilt_collectiveminheli
+        field: collectiveminheli
+        min: -1000
+        max: 5000
+      - name: tilt_collectiveminplane
+        field: collectiveminplane
+        min: -1000
+        max: 5000
+      - name: tilt_gainpitchheli
+        field: gainpitchheli
+        min: -2000
+        max: 2000
+      - name: tilt_gainpitchplane
+        field: gainpitchplane
+        min: -2000
+        max: 2000
+      - name: tilt_gaindiffcollheli
+        field: gaindiffcollplane
+        min: -2000
+        max: 2000
+      - name: tilt_gaindiffcollplane
+        field: gaindiffcollplane
+        min: -2000
+        max: 2000
+      - name: tilt_gaindiffpitchheli
+        field: gaindiffpitchheli
+        min: -2000
+        max: 2000
+      - name: tilt_gaindiffpitchplane
+        field: gaindiffpitchplane
+        min: -2000
+        max: 2000
+      - name: tilt_centerall
+        field: centerall
+        min: 0
+        max: 1
+      - name: tilt_platetype
+        field: platetype
+        min: 0
+        max: 1
+      - name: tilt_nacelletype
+        field: nacelletype
+        min: 1
+        max: 2
+      - name: tilt_cyclictravel
+        field: cyclictravel
+        min: -2000
+        max: 2000
+      - name: tilt_collectivetravel
+        field: collectivetravel
+        min: -2000
+        max: 2000
+        

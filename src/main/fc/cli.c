@@ -2664,6 +2664,91 @@ static void cliFlettner(char *cmdline)
     printServo(DUMP_MASTER, servoParams(0), NULL);
 }
 
+static void printTiltSwashServos(uint8_t dumpMask, const servoSwash_t *customTiltSwashServos, const servoSwash_t *defaultTiltSwashServos)
+{
+    const char *format = "tmix %d %d %d";
+    for (uint32_t i = 0; i < MAX_TILT_SWASH_SERVOS; i++) {
+        const servoSwash_t customTiltSwashServo = customTiltSwashServos[i];
+
+        bool equalsDefault = false;
+        if (defaultTiltSwashServos) {
+        	servoSwash_t tiltSwashServoDefault = defaultTiltSwashServos[i];
+            equalsDefault =  customTiltSwashServo.collective == tiltSwashServoDefault.collective
+                && customTiltSwashServo.pitch == tiltSwashServoDefault.pitch;
+
+            cliDefaultPrintLinef(dumpMask, equalsDefault, format,
+                i,
+				tiltSwashServoDefault.pitch,
+				tiltSwashServoDefault.collective
+            );
+        }
+        cliDumpPrintLinef(dumpMask, equalsDefault, format,
+            i,
+			customTiltSwashServo.pitch,
+			customTiltSwashServo.collective
+        );
+    }
+}
+
+static void cliTiltSwashServos(char *cmdline)
+{
+    char * saveptr;
+    int args[8], check = 0;
+    uint8_t len = strlen(cmdline);
+
+    if (len == 0) {
+    	printTiltSwashServos(DUMP_MASTER, tiltSwashServos(0), NULL);
+    }
+    else if (sl_strncasecmp(cmdline, "reset", 5) == 0) {
+        // erase custom mixer
+        pgResetCopy(tiltSwashServosMutable(0), PG_TILT_SWASH_SERVOS);
+    } else {
+        enum {SERVO  = 0, PITCH, COLLECTIVE, ARGS_COUNT};
+        char *ptr = strtok_r(cmdline, " ", &saveptr);
+        while (ptr != NULL && check < ARGS_COUNT) {
+            args[check++] = fastA2I(ptr);
+            ptr = strtok_r(NULL, " ", &saveptr);
+        }
+
+        if (ptr != NULL || check != ARGS_COUNT) {
+        	cliPrintLine("invalid number of arguments");
+            cliShowParseError();
+            return;
+        }
+
+        int32_t i = args[SERVO];
+        if (i >= 0 && i < MAX_TILT_SWASH_SERVOS &&
+            args[PITCH] <=2000  && args[PITCH] >= -2000 &&
+            args[COLLECTIVE] <=2000  && args[COLLECTIVE] >= -2000) {
+        	tiltSwashServosMutable(i)->pitch = args[PITCH];
+        	tiltSwashServosMutable(i)->collective = args[COLLECTIVE];
+        	cliTiltSwashServos("");
+        } else  {
+        	cliPrintLine("argument out of range");
+            cliShowParseError();
+        }
+    }
+}
+
+static void cliTilt(char *cmdline)
+{
+    UNUSED(cmdline);
+
+    const setting_t *val;
+    char name[SETTING_MAX_NAME_LENGTH];
+
+    for (uint32_t i = 0; i < SETTINGS_TABLE_COUNT; i++) {
+        val = settingGet(i);
+        if (settingNameContains(val, name, "tilt_")) {
+            cliPrintf("%s = ", name);
+            cliPrintVar(val, 0);
+            cliPrintLinefeed();
+        }
+    }
+    printTiltSwashServos(DUMP_MASTER, tiltSwashServos(0), NULL);
+    printServo(DUMP_MASTER, servoParams(0), NULL);
+}
+
 static void cliVersion(char *cmdline)
 {
     UNUSED(cmdline);
@@ -2798,8 +2883,10 @@ static void printConfig(const char *cmdline, bool doDiff)
         printServoMix(dumpMask, customServoMixers_CopyArray, customServoMixers(0));
 
         cliPrintHashLine("flettner mix");
-        //cliDumpPrintLinef(dumpMask, customServoMixers(0)->rate == 0, "smix reset\r\n");
         printFlettnerSwashServos(dumpMask, flettnerSwashServos_CopyArray, flettnerSwashServos(0));
+
+        cliPrintHashLine("tiltrotor mix");
+        printTiltSwashServos(dumpMask, tiltSwashServos_CopyArray, tiltSwashServos(0));
 
         // print servo parameters
         cliPrintHashLine("servo");
@@ -2966,8 +3053,13 @@ const clicmd_t cmdTable[] = {
 #endif
     CLI_COMMAND_DEF("flettner", "view flettner setup", NULL, cliFlettner),
     CLI_COMMAND_DEF("fmix", "flettner mixer",
-        "<servo> <roll> <pitch> <collective>\r\n"
+        "\t<servo> <roll> <pitch> <collective>\r\n"
         "\treset\r\n", cliFlettnerSwashServos),
+    CLI_COMMAND_DEF("tiltrotor", "view tiltrotor setup", NULL, cliTilt),
+    CLI_COMMAND_DEF("tmix", "tiltrotor mixer",
+        "<servo> <pitch> <collective> # servo 0 - 3\r\n"
+        "<servo> <heliposition> <planeposition> # servo 4 - 5\r\n"
+        "\treset\r\n", cliTiltSwashServos),
     CLI_COMMAND_DEF("get", "get variable value", "[name]", cliGet),
 #ifdef USE_GPS
     CLI_COMMAND_DEF("gpspassthrough", "passthrough gps to serial", NULL, cliGpsPassthrough),

@@ -208,8 +208,10 @@ void writeServos(void)
     }
 }
 
-void servoMixer(float dT)
+void servoMixer(float dT, int firstservo)
 {
+	// servos with lower number than firstservo are ignored to allow control by other mixer
+
     int16_t input[INPUT_SOURCE_COUNT]; // Range [-500:+500]
 
     if (FLIGHT_MODE(MANUAL_MODE)) {
@@ -265,7 +267,7 @@ void servoMixer(float dT)
     input[INPUT_RC_CH16]     = rcData[AUX12]    - PWM_RANGE_MIDDLE;
 
 
-    for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+    for (int i = firstservo; i < MAX_SUPPORTED_SERVOS; i++) {
         servo[i] = 0;
     }
 
@@ -273,20 +275,22 @@ void servoMixer(float dT)
     for (int i = 0; i < servoRuleCount; i++) {
         const uint8_t target = currentServoMixer[i].targetChannel;
         const uint8_t from = currentServoMixer[i].inputSource;
+        if(target >= firstservo)
+        {
+			/*
+			 * Apply mixer speed limit. 1 [one] speed unit is defined as 10us/s:
+			 * 0 = no limiting
+			 * 1 = 10us/s -> full servo sweep (from 1000 to 2000) is performed in 100s
+			 * 10 = 100us/s -> full sweep (from 1000 to 2000)  is performed in 10s
+			 * 100 = 1000us/s -> full sweep in 1s
+			 */
+			int16_t inputLimited = (int16_t) rateLimitFilterApply4(&servoSpeedLimitFilter[i], input[from], currentServoMixer[i].speed * 10, dT);
 
-        /*
-         * Apply mixer speed limit. 1 [one] speed unit is defined as 10us/s:
-         * 0 = no limiting
-         * 1 = 10us/s -> full servo sweep (from 1000 to 2000) is performed in 100s
-         * 10 = 100us/s -> full sweep (from 1000 to 2000)  is performed in 10s
-         * 100 = 1000us/s -> full sweep in 1s
-         */
-        int16_t inputLimited = (int16_t) rateLimitFilterApply4(&servoSpeedLimitFilter[i], input[from], currentServoMixer[i].speed * 10, dT);
-
-        servo[target] += ((int32_t)inputLimited * currentServoMixer[i].rate) / 100;
+			servo[target] += ((int32_t)inputLimited * currentServoMixer[i].rate) / 100;
+        }
     }
 
-    for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+    for (int i = firstservo; i < MAX_SUPPORTED_SERVOS; i++) {
 
         /*
          * Apply servo rate
