@@ -463,6 +463,11 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
             sbufWriteU8(dst, 0);
         }
         break;
+    case MSP2_SERVO_PWM_OVERRIDE:
+        for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+            sbufWriteU16(dst, servoPwmOverrides(i)->servoPwmRate);
+        }
+        break;
     case MSP2_COMMON_MOTOR_MIXER:
         for (uint8_t i = 0; i < MAX_SUPPORTED_MOTORS; i++) {
             sbufWriteU16(dst, customMotorMixer(i)->throttle * 1000);
@@ -1896,6 +1901,14 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
             sbufReadU16(src); //Read 2bytes for min/max and ignore it
             sbufReadU8(src); //Read 1 byte for `box` and ignore it
             loadCustomServoMixer();
+        } else
+            return MSP_RESULT_ERROR;
+        break;
+
+    case MSP2_SET_SERVO_PWM_OVERRIDE:
+        sbufReadU8Safe(&tmp_u8, src);
+        if ((dataSize >= 3) && (tmp_u8 < MAX_SUPPORTED_SERVOS)) {
+        	servoPwmOverridesMutable(tmp_u8)->servoPwmRate = sbufReadU16(src);
         } else
             return MSP_RESULT_ERROR;
         break;

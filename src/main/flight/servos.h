@@ -131,6 +131,12 @@ typedef struct servoMetadata_s {
 
 extern int16_t servo[MAX_SUPPORTED_SERVOS];
 
+typedef struct servoPwmOverride_s {
+    int16_t servoPwmRate;                           // overrride pwm rate for individual servos, 0 applies default servoConfig.servoPwmRate rate
+} servoPwmOverride_t;
+
+PG_DECLARE_ARRAY(servoPwmOverride_t, MAX_SUPPORTED_SERVOS, servoPwmOverrides);
+
 bool isServoOutputEnabled(void);
 bool isMixerUsingServos(void);
 void writeServos(void);

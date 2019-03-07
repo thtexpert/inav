@@ -81,6 +81,17 @@ void pgResetFn_servoParams(servoParam_t *instance)
 
 int16_t servo[MAX_SUPPORTED_SERVOS];
 
+PG_REGISTER_ARRAY_WITH_RESET_FN(servoPwmOverride_t, MAX_SUPPORTED_SERVOS, servoPwmOverrides, PG_SERVO_PWM_OVERRIDE, 0);
+
+void pgResetFn_servoPwmOverrides(servoPwmOverride_t *instance)
+{
+    for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+        RESET_CONFIG(servoPwmOverride_t, &instance[i],
+            .servoPwmRate = 0
+        );
+    }
+}
+
 static uint8_t servoRuleCount = 0;
 static servoMixer_t currentServoMixer[MAX_SERVO_RULES];
 static int servoOutputEnabled;

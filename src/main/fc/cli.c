@@ -1471,6 +1471,67 @@ static void cliServo(char *cmdline)
     }
 }
 
+static void printServoPwmOverrides(uint8_t dumpMask, const servoPwmOverride_t *servoPwmOverrides, const servoPwmOverride_t *defaultServoPwmOverrides)
+{
+    const char *format = "servopwmoverride %d %d";
+    for (uint32_t i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+        const servoPwmOverride_t servoPwmOverride = servoPwmOverrides[i];
+        if (servoPwmOverride.servoPwmRate == 0) {
+            //break;
+        }
+
+        bool equalsDefault = false;
+        if (defaultServoPwmOverrides) {
+        	servoPwmOverride_t servoPwmOverridesDefault = defaultServoPwmOverrides[i];
+            equalsDefault = servoPwmOverride.servoPwmRate == servoPwmOverridesDefault.servoPwmRate;
+
+            cliDefaultPrintLinef(dumpMask, equalsDefault, format,
+                i,
+				servoPwmOverridesDefault.servoPwmRate
+            );
+        }
+        cliDumpPrintLinef(dumpMask, equalsDefault, format,
+            i,
+			servoPwmOverride.servoPwmRate
+        );
+    }
+}
+
+static void cliServoPwmOverride(char *cmdline)
+{
+    char * saveptr;
+    int args[8], check = 0;
+    uint8_t len = strlen(cmdline);
+
+    if (len == 0) {
+        printServoPwmOverrides(DUMP_MASTER, servoPwmOverrides(0), NULL);
+    } else if (sl_strncasecmp(cmdline, "reset", 5) == 0) {
+        // erase custom mixer
+        pgResetCopy(servoPwmOverridesMutable(0), PG_SERVO_PWM_OVERRIDE);
+    } else {
+        enum {TARGET = 0, PWM, ARGS_COUNT};
+        char *ptr = strtok_r(cmdline, " ", &saveptr);
+        while (ptr != NULL && check < ARGS_COUNT) {
+            args[check++] = fastA2I(ptr);
+            ptr = strtok_r(NULL, " ", &saveptr);
+        }
+
+        if (ptr != NULL || check != ARGS_COUNT) {
+            cliShowParseError();
+            return;
+        }
+
+        int32_t i = args[TARGET];
+        if (i >= 0 && i < MAX_SUPPORTED_SERVOS &&
+            args[PWM] >= 0 && args[PWM] <= 498) {
+        	servoPwmOverridesMutable(i)->servoPwmRate = args[PWM];
+            cliServoPwmOverride("");
+        } else {
+            cliShowParseError();
+        }
+    }
+}
+
 static void printServoMix(uint8_t dumpMask, const servoMixer_t *customServoMixers, const servoMixer_t *defaultCustomServoMixers)
 {
     const char *format = "smix %d %d %d %d %d";
@@ -2892,6 +2953,10 @@ static void printConfig(const char *cmdline, bool doDiff)
         cliPrintHashLine("servo");
         printServo(dumpMask, servoParams_CopyArray, servoParams(0));
 
+        // print servo pwm overrides
+        cliPrintHashLine("servo pwm override");
+        printServoPwmOverrides(dumpMask, servoPwmOverrides_CopyArray, servoPwmOverrides(0));
+
         cliPrintHashLine("feature");
         printFeature(dumpMask, &featureConfig_Copy, featureConfig());
 
@@ -3053,12 +3118,12 @@ const clicmd_t cmdTable[] = {
 #endif
     CLI_COMMAND_DEF("flettner", "view flettner setup", NULL, cliFlettner),
     CLI_COMMAND_DEF("fmix", "flettner mixer",
-        "\t<servo> <roll> <pitch> <collective>\r\n"
+        "<servo> <roll> <pitch> <collective>\r\n"
         "\treset\r\n", cliFlettnerSwashServos),
     CLI_COMMAND_DEF("tiltrotor", "view tiltrotor setup", NULL, cliTilt),
     CLI_COMMAND_DEF("tmix", "tiltrotor mixer",
         "<servo> <pitch> <collective> # servo 0 - 3\r\n"
-        "<servo> <heliposition> <planeposition> # servo 4 - 5\r\n"
+        "\t<servo> <heliposition> <planeposition> # servo 4 - 5\r\n"
         "\treset\r\n", cliTiltSwashServos),
     CLI_COMMAND_DEF("get", "get variable value", "[name]", cliGet),
 #ifdef USE_GPS
@@ -3089,6 +3154,9 @@ const clicmd_t cmdTable[] = {
     CLI_COMMAND_DEF("serialpassthrough", "passthrough serial data to port", "<id> [baud] [mode] : passthrough to serial", cliSerialPassthrough),
 #endif
     CLI_COMMAND_DEF("servo", "configure servos", NULL, cliServo),
+    CLI_COMMAND_DEF("servopwmoverride", "override pwm frequency of dedicated servos",
+    		"<id> <pmw>\r\n"
+    		"\treset", cliServoPwmOverride),
     CLI_COMMAND_DEF("set", "change setting", "[<name>=<value>]", cliSet),
     CLI_COMMAND_DEF("smix", "servo mixer",
         "<rule> <servo> <source> <rate> <speed>\r\n"

@@ -257,7 +257,7 @@ After restoring it's always a good idea to `dump` or `diff` the settings once ag
 |  tri_unarmed_servo  | ON | On tricopter mix only, if this is set to ON, servo will always be correcting regardless of armed state. to disable this, set it to OFF. |
 |  servo_lpf_hz  | 20 | Selects the servo PWM output cutoff frequency. Value is in [Hz] |
 |  servo_center_pulse  | 1500 | Servo midpoint |
-|  servo_pwm_rate  | 50 | Output frequency (in Hz) servo pins. When using tricopters or gimbal with digital servo, this rate can be increased. Max of 498Hz (for 500Hz pwm period), and min of 50Hz. Most digital servos will support for example 330Hz. |
+|  servo_pwm_rate  | 50 | Output frequency (in Hz) servo pins. When using tricopters or gimbal with digital servo, this rate can be increased. Max of 498Hz (for 500Hz pwm period), and min of 50Hz. Most digital servos will support for example 330Hz. Use servopwmoverride to override pwm for individual servos.|
 |  failsafe_delay  | 5 | Time in deciseconds to wait before activating failsafe when signal is lost. See [Failsafe documentation](Failsafe.md#failsafe_delay). |
 |  failsafe_recovery_delay  | 5 | Time in deciseconds to wait before aborting failsafe when signal is recovered. See [Failsafe documentation](Failsafe.md#failsafe_recovery_delay). |
 |  failsafe_off_delay  | 200 | Time in deciseconds to wait before turning off motors when failsafe is activated. 0 = No timeout. See [Failsafe documentation](Failsafe.md#failsafe_off_delay). |

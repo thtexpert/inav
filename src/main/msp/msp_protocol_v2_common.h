@@ -39,4 +39,6 @@
 #define MSP2_TILT_SERVO_MIX		      0x1012    // out message     returns tilt servo mix data
 #define MSP2_TILT_SET_SERVO_MIX		  0x1013    // in message      set tilt servo mix data
 #define MSP2_TILT_LIVE   		      0x1014    // out message     returns tilt live data
+#define MSP2_SERVO_PWM_OVERRIDE	      0x1015    // out message
+#define MSP2_SET_SERVO_PWM_OVERRIDE	  0x1016    // in message
 

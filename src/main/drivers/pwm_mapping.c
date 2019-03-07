@@ -31,6 +31,8 @@
 #include "drivers/pwm_mapping.h"
 #include "drivers/rx_pwm.h"
 
+#include "flight/servos.h"
+
 enum {
     MAP_TO_NONE,
     MAP_TO_PPM_INPUT,
@@ -231,7 +233,15 @@ pwmIOConfiguration_t *pwmInit(drv_pwm_config_t *init)
                 continue;
             }
 
-            if (pwmServoConfig(timerHardwarePtr, pwmIOConfiguration.servoCount, init->servoPwmRate, init->servoCenterPulse, init->enablePWMOutput)) {
+            uint16_t servoPwmRate = init->servoPwmRate;
+            for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
+            	if(servoPwmOverrides(i)->servoPwmRate != 0)
+            	{
+            		servoPwmRate = servoPwmOverrides(i)->servoPwmRate;
+            	}
+            }
+
+            if (pwmServoConfig(timerHardwarePtr, pwmIOConfiguration.servoCount, servoPwmRate, init->servoCenterPulse, init->enablePWMOutput)) {
                 pwmIOConfiguration.ioConfigurations[pwmIOConfiguration.ioCount].flags = PWM_PF_SERVO | PWM_PF_OUTPUT_PROTOCOL_PWM;
                 pwmIOConfiguration.ioConfigurations[pwmIOConfiguration.ioCount].index = pwmIOConfiguration.servoCount;
                 pwmIOConfiguration.ioConfigurations[pwmIOConfiguration.ioCount].timerHardware = timerHardwarePtr;
