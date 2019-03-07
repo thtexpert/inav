@@ -15,7 +15,13 @@ The _Swash Plate Mixer_ generates the controls for the left and right swash plat
 
 The _Servo Output Mixer_ generates the individual Servo signal to move the Swashplate as given by the _Swash Plate Mixer_.
 
-The Tiltrotor platform inherits all features, limitations and capabilities from the AIRPLANE platform type. The mixer occuoies the first 6 servos of the servomixer.
+The Tiltrotor platform inherits all features, limitations and capabilities from the AIRPLANE platform type. The mixer occupies the first up to 6 servos of the servomixer.
+
+The nacelle is controlle by 6th channel of receiver. An input of 1050usec maps to heli position, an input of 1950usec maps to plane position.
+
+The tilt speed of the Nacelle is controlled by a speed parameter (`tilt_nacellespeed`). The nacelle trip is limited between `tilt_nacellemin` and `tilt_nacellemax`.
+
+The 4th reciever channel maps to the collective rotor settings. A receiver input at Minimum Throttle set lowest collective rotor blade anble, at an input of  Maximum Throttle the blades are inclined maximum.
 
 ## CLI Command Reference
 
@@ -53,9 +59,11 @@ The Tiltrotor platform inherits all features, limitations and capabilities from 
 
 ### useful CLI commands
 
-`set platform_type` |  |  | TILTROTOR`
+`set platform_type TILTROTOR`
 
-`set servo_pwm_rate` |  |  | 120`
+`set servo_pwm_rate 120`
 
-`tiltrotor` |  |  | report all tiltrotor related settings
+`servopwmoverride 4 50`
+
+`tiltrotor`  report all tiltrotor related settings
 
