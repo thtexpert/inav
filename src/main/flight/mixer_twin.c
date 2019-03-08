@@ -108,6 +108,15 @@ void pgResetFn_flettnerSwashServos(servoSwash_t *instance)
 
 }
 
+
+void writeFlettnerServos(int firstunusedservo)
+{
+    for (int i = 0; i < firstunusedservo; i++) {
+            pwmWriteServo(i, servo[i]);
+    }
+}
+
+
 void flettnerMixer()
 {
 	int32_t 	pitch,roll,yaw; // +/-500 full scale
@@ -314,6 +323,33 @@ void pgResetFn_tiltSwashServos(servoSwash_t *instance)
 static int32_t		nacelle_angle = 90000000; // default to heli position
 static float nacelle_cos = 1.0; // 0 at heli, 1 at plane mode
 static float nacelle_sin = 1.0; // 1 at heli, 0 at plane mode
+static bool nacelleServoValid = false;
+
+void writeTiltrotorServos(int firstunusedservo)
+{
+	if(nacelleServoValid == false)
+	{
+		// nacelle servo controll mus be at 0 degree or 90 degree before servo is controlled
+		if(rcData[AUX2] > 1020 && rcData[AUX2] < 1080 ){
+			nacelleServoValid = true;
+		}
+		if(rcData[AUX2] > 1920 && rcData[AUX2] < 1980 ){
+			nacelleServoValid = true;
+		}
+	}
+    for (int i = 0; i < 4; i++) {
+            pwmWriteServo(i, servo[i]);
+    }
+    for (int i = 4; i < firstunusedservo; i++) {
+    	if(nacelleServoValid == true){
+            pwmWriteServo(i, servo[i]);
+		}
+		else {
+            pwmWriteServo(i, 0);
+		}
+
+    }
+}
 
 void nacelle_control(timeDelta_t looptime)
 {

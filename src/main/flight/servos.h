@@ -139,7 +139,7 @@ PG_DECLARE_ARRAY(servoPwmOverride_t, MAX_SUPPORTED_SERVOS, servoPwmOverrides);
 
 bool isServoOutputEnabled(void);
 bool isMixerUsingServos(void);
-void writeServos(void);
+void writeServos(int firstservo);
 void loadCustomServoMixer(void);
 void servoMixer(float dT, int firstservo);
 void servoComputeScalingFactors(uint8_t servoIndex);

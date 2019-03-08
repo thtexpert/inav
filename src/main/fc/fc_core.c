@@ -764,6 +764,7 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
     	nacelle_control(cycleTime);
     	tiltrotorMixer();
     	firstfreeservo = MAX_TILT_SWASH_SERVOS - 2 + mixerTiltMutable()->nacelletype;
+    	writeTiltrotorServos(firstfreeservo);
     }
 
     if (isMixerUsingServos()) {
@@ -773,7 +774,7 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
 
     //Servos should be filtered or written only when mixer is using servos or special feaures are enabled
     if (isServoOutputEnabled()) {
-        writeServos();
+        writeServos(firstfreeservo);
     }
 
     if (motorControlEnable) {

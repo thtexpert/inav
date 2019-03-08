@@ -21,6 +21,8 @@ The nacelle is controlle by 6th channel of receiver. An input of 1050usec maps t
 
 The tilt speed of the Nacelle is controlled by a speed parameter (`tilt_nacellespeed`). The nacelle trip is limited between `tilt_nacellemin` and `tilt_nacellemax`.
 
+The nacelle will not move before a valid signal is received from channel 6 (either 0 degree or 90 degree).
+
 The 4th reciever channel maps to the collective rotor settings. A receiver input at Minimum Throttle set lowest collective rotor blade anble, at an input of  Maximum Throttle the blades are inclined maximum.
 
 ## CLI Command Reference
@@ -62,6 +64,8 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 `set platform_type TILTROTOR`
 
 `set servo_pwm_rate 120`
+
+`set fixed_wing_auto_arm = ON`
 
 `servopwmoverride 4 50`
 

@@ -112,9 +112,12 @@ typedef struct tiltlive_s {
 
 extern tiltlive_t tiltlive; // live data from tilt rotor control
 
+
+void writeFlettnerServos(int firstunusedservo);
 bool isMixerUsingFlettner(void);
 void flettnerMixer(void);
 
+void writeTiltrotorServos(int firstunusedservo);
 void nacelle_control(timeDelta_t looptime);
 bool isMixerUsingTiltrotor(void);
 void tiltrotorMixer(void);

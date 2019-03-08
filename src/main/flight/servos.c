@@ -196,11 +196,11 @@ static void filterServos(void)
     }
 }
 
-void writeServos(void)
+void writeServos(int firstservo)
 {
     filterServos();
 
-    int servoIndex = 0;
+    int servoIndex = firstservo;
     bool zeroServoValue = false;
 
     /*
