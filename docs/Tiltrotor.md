@@ -71,3 +71,12 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 
 `tiltrotor`  report all tiltrotor related settings
 
+
+### SmartPort Telemetry
+
+In TILTROTOR mode the smartport telemetry delivers the actual Nacell angle with ID 0x0450 and sends the angle with a resolution of 10 per 1 degree. Set the Ratio to 25.5 in Taranis setup to read correct value.
+
+* **0x0450** : current nacelle angle, use 25.5 ratio in Taranis
+* **0x0460** : integrator value of PITCH (available for all fixed wing)
+* **0x0470** : integrator value of ROLL (available for all fixed wing)
+* **0x0480** : integrator value of YAW (available for all fixed wing)

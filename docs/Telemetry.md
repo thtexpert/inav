@@ -120,6 +120,10 @@ The following sensors are transmitted
 * **0420** : distance to GPS home fix, in meters
 * **0430** : if `frsky_pitch_roll = ON` set this will be pitch degrees*10
 * **0440** : if `frsky_pitch_roll = ON` set this will be roll degrees*10
+* **0450** : current nacelle angle, use 25.5 ratio in Taranis (for tiltrotor only)
+* **0460** : integrator value of PITCH (available for all fixed wing)
+* **0470** : integrator value of ROLL (available for all fixed wing)
+* **0480** : integrator value of YAW (available for all fixed wing)
 
 ### Compatible SmartPort/INAV telemetry flight status
 

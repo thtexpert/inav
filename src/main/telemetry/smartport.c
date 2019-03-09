@@ -35,6 +35,7 @@
 #include "flight/failsafe.h"
 #include "flight/imu.h"
 #include "flight/mixer.h"
+#include "flight/mixer_twin.h"
 #include "flight/pid.h"
 
 #include "io/beeper.h"
@@ -78,6 +79,10 @@ enum
     FSSP_DATAID_HEADING    = 0x0840 ,
     FSSP_DATAID_PITCH      = 0x0430 ,
     FSSP_DATAID_ROLL       = 0x0440 ,
+    FSSP_DATAID_NACELLE    = 0x0450 ,
+    FSSP_DATAID_INT_PITCH  = 0x0460 ,
+    FSSP_DATAID_INT_ROLL   = 0x0470 ,
+    FSSP_DATAID_INT_YAW    = 0x0480 ,
     FSSP_DATAID_ACCX       = 0x0700 ,
     FSSP_DATAID_ACCY       = 0x0710 ,
     FSSP_DATAID_ACCZ       = 0x0720 ,
@@ -108,6 +113,10 @@ const uint16_t frSkyDataIdTable[] = {
     FSSP_DATAID_HEADING   ,
     FSSP_DATAID_PITCH     ,
     FSSP_DATAID_ROLL      ,
+	FSSP_DATAID_NACELLE	  ,
+	FSSP_DATAID_INT_PITCH ,
+	FSSP_DATAID_INT_ROLL  ,
+	FSSP_DATAID_INT_YAW   ,
     FSSP_DATAID_ACCX      ,
     FSSP_DATAID_ACCY      ,
     FSSP_DATAID_ACCZ      ,
@@ -439,6 +448,30 @@ void processSmartPortTelemetry(smartPortPayload_t *payload, volatile bool *clear
             case FSSP_DATAID_ROLL       :
                 if (telemetryConfig()->frsky_pitch_roll) {
                     smartPortSendPackage(id, attitude.values.roll); // given in 10*deg
+                    *clearToSend = false;
+                }
+                break;
+            case FSSP_DATAID_NACELLE    :
+                if (isMixerUsingTiltrotor()) {
+                    smartPortSendPackage(id, tiltlive.nacelle/10); // given in 10*deg
+                    *clearToSend = false;
+                }
+                break;
+            case FSSP_DATAID_INT_PITCH    :
+                if (STATE(FIXED_WING)) {
+                    smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_PITCH] ));
+                    *clearToSend = false;
+                }
+                break;
+            case FSSP_DATAID_INT_ROLL     :
+                if (STATE(FIXED_WING)) {
+                    smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_ROLL] ));
+                    *clearToSend = false;
+                }
+                break;
+            case FSSP_DATAID_INT_YAW      :
+                if (STATE(FIXED_WING)) {
+                    smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_YAW] ));
                     *clearToSend = false;
                 }
                 break;
