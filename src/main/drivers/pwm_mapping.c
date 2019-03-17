@@ -234,12 +234,10 @@ pwmIOConfiguration_t *pwmInit(drv_pwm_config_t *init)
             }
 
             uint16_t servoPwmRate = init->servoPwmRate;
-            for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
-            	if(servoPwmOverrides(i)->servoPwmRate != 0)
-            	{
-            		servoPwmRate = servoPwmOverrides(i)->servoPwmRate;
-            	}
-            }
+			if(servoPwmOverrides(pwmIOConfiguration.servoCount)->servoPwmRate != 0)
+			{
+				servoPwmRate = servoPwmOverrides(pwmIOConfiguration.servoCount)->servoPwmRate;
+			}
 
             if (pwmServoConfig(timerHardwarePtr, pwmIOConfiguration.servoCount, servoPwmRate, init->servoCenterPulse, init->enablePWMOutput)) {
                 pwmIOConfiguration.ioConfigurations[pwmIOConfiguration.ioCount].flags = PWM_PF_SERVO | PWM_PF_OUTPUT_PROTOCOL_PWM;
