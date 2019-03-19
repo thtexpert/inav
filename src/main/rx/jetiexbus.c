@@ -63,6 +63,12 @@
 
 #include "telemetry/telemetry.h"
 #include "telemetry/jetiexbus.h"
+
+#include "flight/mixer_twin.h"
+#include "flight/imu.h"
+#include "flight/pid.h"
+#include "telemetry/frsky.h"
+
 #endif // TELEMETRY
 
 
@@ -169,13 +175,15 @@ typedef struct exBusSensor_s{
 // list of telemetry messages
 // after every 15 sensors a new header has to be inserted (e.g. "CF-Dev 1.12 S2")
 exBusSensor_t jetiExSensors[] = {
-    { "CF-Dev 1.12 S1", "",     0,      0,             0 },                     // device descripton
+    { "Twinflight", "",     0,      0,             0 },                     // device descripton
     { "Voltage",        "V",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) },
     { "Current",        "A",    0,      EX_TYPE_14b,   DECIMAL_MASK(2) },
     { "Altitude",       "m",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) },
-    { "Capacity",       "mAh",  0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
-    { "frames lost",    " ",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },       // for debug only
-    { "time Diff",      "us",   0,      EX_TYPE_14b,   DECIMAL_MASK(0) }        // for debug only
+    { "Capacity",     "mAh",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
+    { "Nacelle ang",  "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) },
+    { "Roll Integr",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
+    { "Pitch Integ",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
+    { "Flight Mode",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) }
 };
 
 
@@ -185,8 +193,10 @@ enum exSensors_e {
     EX_CURRENT,
     EX_ALTITUDE,
     EX_CAPACITY,
-    EX_FRAMES_LOST,                                                             // for debug only
-    EX_TIME_DIFF                                                                // for debug only
+	EX_NACELLE_ANGLE	  ,
+	EX_INTEGRATOR_PITCH ,
+	EX_INTEGRATOR_ROLL  ,
+	EX_FLIGHT_MODE
 };
 
 #define JETI_EX_SENSOR_COUNT (ARRAYLEN(jetiExSensors))
@@ -527,8 +537,16 @@ void handleJetiExBusTelemetry(void)
             jetiExSensors[EX_CURRENT].value = getAmperage();
             jetiExSensors[EX_ALTITUDE].value = baro.BaroAlt;
             jetiExSensors[EX_CAPACITY].value = getMAhDrawn();
-            jetiExSensors[EX_FRAMES_LOST].value = framesLost;
-            jetiExSensors[EX_TIME_DIFF].value = timeDiff;
+            if (isMixerUsingTiltrotor()) {
+            	jetiExSensors[EX_NACELLE_ANGLE].value = tiltlive.nacelle/10; // given in 10*deg
+            }
+            else {
+                jetiExSensors[EX_NACELLE_ANGLE].value = 0;
+            }
+            jetiExSensors[EX_INTEGRATOR_PITCH].value = lrintf(10 * axisPID_I[FD_PITCH] );
+            jetiExSensors[EX_INTEGRATOR_ROLL].value = lrintf(10 * axisPID_I[FD_ROLL] );
+            jetiExSensors[EX_FLIGHT_MODE].value = frskyGetFlightMode();
+
 
             // switch to TX mode
             if (uartTotalRxBytesWaiting(jetiExBusPort) == 0) {
