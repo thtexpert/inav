@@ -38,8 +38,6 @@
 
 #define USE_DSHOT
 
-#define USE_DSHOT
-
 // Status LED
 #define LED0                    PA8
 

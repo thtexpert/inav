@@ -28,11 +28,7 @@ const timerHardware_t timerHardware[] = {
     DEF_TIM(TIM2, CH1, PA0,  TIM_USE_LED,  0, 0), //2812LED
 
     DEF_TIM(TIM5, CH2, PA1,  TIM_USE_MC_MOTOR | TIM_USE_FW_MOTOR,  0, 0), // S1_OUT
-<<<<<<< HEAD
-    DEF_TIM(TIM1, CH1, PA7,  TIM_USE_MC_MOTOR | TIM_USE_FW_MOTOR,  0, 0), // S2_OUT
-=======
     DEF_TIM(TIM1, CH1N, PA7,  TIM_USE_MC_MOTOR | TIM_USE_FW_MOTOR,  0, 0), // S2_OUT
->>>>>>> master
     DEF_TIM(TIM4, CH3, PB8,  TIM_USE_MC_MOTOR | TIM_USE_FW_SERVO,  0, 0), // S3_OUT
     DEF_TIM(TIM3, CH4, PB1,  TIM_USE_MC_MOTOR | TIM_USE_FW_SERVO,  0, 0), // S4_OUT
 
@@ -40,8 +36,4 @@ const timerHardware_t timerHardware[] = {
     DEF_TIM(TIM9, CH2, PA3,  TIM_USE_ANY,  0, 0), //UART2 RX
 };
 
-<<<<<<< HEAD
 const int timerHardwareCount = sizeof(timerHardware) / sizeof(timerHardware[0]);
-=======
-const int timerHardwareCount = sizeof(timerHardware) / sizeof(timerHardware[0]);
->>>>>>> master
