@@ -42,6 +42,9 @@ class Compiler
          return 
         dirs.each do |dir|
             p = File.join(dir, bin)
+			if File::ALT_SEPARATOR
+				p.gsub!(File::SEPARATOR, File::ALT_SEPARATOR)
+			end
             ['', '.exe'].each do |suffix|
                 f = p + suffix
                 if File.executable?(f)
@@ -61,7 +64,10 @@ class Compiler
 
     def default_args
         cflags = Shellwords.split(ENV["CFLAGS"] || "")
-        args = [@path]
+        args = [ @path ]
+		if File::ALT_SEPARATOR
+			args = ["\"" + @path + "\""]
+		end
         cflags.each do |flag|
             # Don't generate temporary files
             if flag == "" || flag == "-MMD" || flag == "-MP" || flag.start_with?("-save-temps")
