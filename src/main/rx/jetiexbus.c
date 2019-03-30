@@ -60,6 +60,7 @@
 #include "sensors/sensors.h"
 #include "sensors/battery.h"
 #include "sensors/barometer.h"
+#include "sensors/pitotmeter.h"
 
 #include "telemetry/telemetry.h"
 #include "telemetry/jetiexbus.h"
@@ -183,7 +184,8 @@ exBusSensor_t jetiExSensors[] = {
     { "Nacelle ang",  "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) },
     { "Roll Integr",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
     { "Pitch Integ",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
-    { "Flight Mode",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) }
+    { "Flight Mode",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
+    { "Air Speed",    "m/s",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) }
 };
 
 
@@ -196,7 +198,8 @@ enum exSensors_e {
 	EX_NACELLE_ANGLE	  ,
 	EX_INTEGRATOR_PITCH ,
 	EX_INTEGRATOR_ROLL  ,
-	EX_FLIGHT_MODE
+	EX_FLIGHT_MODE,
+	EX_AIRSPEED
 };
 
 #define JETI_EX_SENSOR_COUNT (ARRAYLEN(jetiExSensors))
@@ -546,6 +549,12 @@ void handleJetiExBusTelemetry(void)
             jetiExSensors[EX_INTEGRATOR_PITCH].value = lrintf(10 * axisPID_I[FD_PITCH] );
             jetiExSensors[EX_INTEGRATOR_ROLL].value = lrintf(10 * axisPID_I[FD_ROLL] );
             jetiExSensors[EX_FLIGHT_MODE].value = frskyGetFlightMode();
+            jetiExSensors[EX_AIRSPEED].value = 0.0;
+#ifdef USE_PITOT
+			if (sensors(SENSOR_PITOT)) {
+				jetiExSensors[EX_AIRSPEED].value = pitot.airSpeed * 0.01; // m/s?
+			}
+#endif
 
 
             // switch to TX mode

@@ -80,3 +80,17 @@ In TILTROTOR mode the smartport telemetry delivers the actual Nacell angle with 
 * **0x0460** : integrator value of PITCH (available for all fixed wing)
 * **0x0470** : integrator value of ROLL (available for all fixed wing)
 * **0x0480** : integrator value of YAW (available for all fixed wing)
+
+### Jeti Exbus Telemetry
+
+* **Nacelle ang** : current nacelle angle
+* **Roll Integr** : integrator value of PITCH (available for all fixed wing)
+* **Pitch Integ** : integrator value of ROLL (available for all fixed wing)
+* **Flight Mode** : flight mode, sent as 5 digits. Number is sent as **ABCDE** detailed below. The numbers are additives (for example: if digit C is 6, it means both position hold and altitude hold are active) :
+  * **A** : 1 = flaperon mode, 2 = auto tune mode, 4 = failsafe mode
+  * **B** : 1 = return to home, 2 = waypoint mode, 4 = headfree mode
+  * **C** : 1 = heading hold, 2 = altitude hold, 4 = position hold
+  * **D** : 1 = angle mode, 2 = horizon mode, 4 = passthru mode
+  * **E** : 1 = ok to arm, 2 = arming is prevented, 4 = armed
+* **Air Speed** : true air speed, from pitot sensor. (m/s)
+
