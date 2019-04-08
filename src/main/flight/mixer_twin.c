@@ -477,10 +477,12 @@ void tiltrotorMixer(void)
 			  tiltlive.leftpitch    * tiltSwashServos(i)->pitch  ;
 		servo[i] = lX2 / 3000;
 		servo[i] += servoParams(i)->middle;
+        servo[i] = constrain(servo[i], servoParams(i)->min, servoParams(i)->max);
 		lX2 = tiltlive.rightcollective * tiltSwashServos(i+2)->collective -
 			  tiltlive.rightpitch    * tiltSwashServos(i+2)->pitch  ;
 		servo[i+2] = lX2 / 3000;
 		servo[i+2] += servoParams(i+2)->middle;
+        servo[i+2] = constrain(servo[i+2], servoParams(i+2)->min, servoParams(i+2)->max);
 	}
 
 
