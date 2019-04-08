@@ -758,6 +758,7 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
     if (isMixerUsingFlettner()) {
     	flettnerMixer();
     	firstfreeservo = MAX_FLETTNER_SWASH_SERVOS;
+    	writeFlettnerServos(firstfreeservo);
     }
 
     if (isMixerUsingTiltrotor()) {
