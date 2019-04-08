@@ -67,6 +67,10 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 
 `set fixed_wing_auto_arm = ON`
 
+`set fw_iterm_throw_limit = 450`
+
+`set fw_iterm_limit_stick_position = 0.45`
+
 `servopwmoverride 4 50`
 
 `tiltrotor`  report all tiltrotor related settings

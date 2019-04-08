@@ -26,7 +26,6 @@ OBJECT_DIR = ../../obj/test
 COMMON_FLAGS = \
 	-g \
 	-Wall \
-	-pthread \
 	-Wextra \
 	-ggdb3 \
 	-O0 \
