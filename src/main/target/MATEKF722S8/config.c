@@ -17,10 +17,27 @@
 
 #include <stdint.h>
 #include "platform.h"
-#include "io/piniobox.h"
+//#include "io/piniobox.h"
+#include "fc/config.h"
+#include "fc/controlrate_profile.h"
+#include "flight/mixer.h"
 
 void targetConfiguration(void)
 {
-    pinioBoxConfigMutable()->permanentId[0] = 47;
-    pinioBoxConfigMutable()->permanentId[1] = 48;
+    setConfigProfile(0);
+
+    //    pinioBoxConfigMutable()->permanentId[0] = 47;
+    //    pinioBoxConfigMutable()->permanentId[1] = 48;
+    mixerConfigMutable()->platformType = PLATFORM_AIRPLANE;   // default mixer to Airplane
+
+    motorConfigMutable()->minthrottle = 1050;
+    motorConfigMutable()->maxthrottle = 1950;
+
+
+    ((controlRateConfig_t*)currentControlRateProfile)->stabilized.rcExpo8 = 0;
+    ((controlRateConfig_t*)currentControlRateProfile)->stabilized.rcYawExpo8 = 0;
+    ((controlRateConfig_t*)currentControlRateProfile)->manual.rcExpo8 = 0;
+    ((controlRateConfig_t*)currentControlRateProfile)->manual.rcYawExpo8 = 0;
+    ((controlRateConfig_t*)currentControlRateProfile)->throttle.rcMid8 = 0;
+    ((controlRateConfig_t*)currentControlRateProfile)->throttle.rcExpo8 = 0;
 }
