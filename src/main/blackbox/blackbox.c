@@ -786,8 +786,10 @@ static void writeIntraframe(void)
         blackboxWriteSignedVBArray(blackboxCurrent->debug, DEBUG32_VALUE_COUNT);
     }
 
-    //Motors can be below minthrottle when disarmed, but that doesn't happen much
-    blackboxWriteUnsignedVB(blackboxCurrent->motor[0] - motorConfig()->minthrottle);
+    if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_AT_LEAST_MOTORS_1)) {
+		//Motors can be below minthrottle when disarmed, but that doesn't happen much
+		blackboxWriteUnsignedVB(blackboxCurrent->motor[0] - motorConfig()->minthrottle);
+    }
 
     //Motors tend to be similar to each other so use the first motor's value as a predictor of the others
     const int motorCount = getMotorCount();
