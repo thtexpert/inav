@@ -222,7 +222,7 @@ void initActiveBoxIds(void)
 
 #endif
 
-    if (STATE(FIXED_WING)) {
+    if (STATE(FIXED_WING)  || (mixerConfig()->platformType == PLATFORM_TILTROTOR) || (mixerConfig()->platformType == PLATFORM_FLETTNER)) {
         activeBoxIds[activeBoxIdCount++] = BOXMANUAL;
         if (!feature(FEATURE_FW_LAUNCH)) {
            activeBoxIds[activeBoxIdCount++] = BOXNAVLAUNCH;

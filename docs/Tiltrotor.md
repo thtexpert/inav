@@ -15,7 +15,9 @@ The _Swash Plate Mixer_ generates the controls for the left and right swash plat
 
 The _Servo Output Mixer_ generates the individual Servo signal to move the Swashplate as given by the _Swash Plate Mixer_.
 
-The Tiltrotor platform inherits all features, limitations and capabilities from the AIRPLANE platform type. The mixer occupies the first up to 6 servos of the servomixer.
+The Tiltrotor platform inherits all features, limitations and capabilities from the MULTICOPTER platform type. The mixer occupies the first up to 6 servos of the servomixer. Manual mode selection is possible for tiltrotor.
+
+System uses multicopter PID controller.
 
 The nacelle is controlle by 6th channel of receiver. An input of 1050usec maps to heli position, an input of 1950usec maps to plane position.
 
@@ -64,12 +66,6 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 `set platform_type TILTROTOR`
 
 `set servo_pwm_rate 120`
-
-`set fixed_wing_auto_arm = ON`
-
-`set fw_iterm_throw_limit = 450`
-
-`set fw_iterm_limit_stick_position = 0.45`
 
 `servopwmoverride 4 50`
 

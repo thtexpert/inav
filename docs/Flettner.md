@@ -15,7 +15,9 @@ The _Swash Plate Mixer_ generates the controls for the left and right swash plat
 
 The _Servo Output Mixer_ generates the individual Servo signal to move the Swashplate as given by the _Swash Plate Mixer_.
 
-The Flettner platform inherits all features, limitations and capabilities from the AIRPLANE platform type. The mixer occuoies the first 6 servos of the servomixer.
+The Flettner platform inherits all features, limitations and capabilities from the MULTICOPTER platform type. The mixer occupies the first 6 servos of the servomixer. Manual mode selection is possible for tiltrotor.
+
+System uses multicopter PID controller.
 
 ## CLI Command Reference
 

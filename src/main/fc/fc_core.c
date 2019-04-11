@@ -574,7 +574,7 @@ void processRx(timeUs_t currentTimeUs)
 #endif
 
     // Handle passthrough mode
-    if (STATE(FIXED_WING)) {
+    if (STATE(FIXED_WING) || (mixerConfig()->platformType == PLATFORM_TILTROTOR) || (mixerConfig()->platformType == PLATFORM_FLETTNER)) {
         if ((IS_RC_MODE_ACTIVE(BOXMANUAL) && !navigationRequiresAngleMode() && !failsafeRequiresAngleMode()) ||    // Normal activation of passthrough
             (!ARMING_FLAG(ARMED) && isCalibrating())){                                                              // Backup - if we are not armed - enforce passthrough while calibrating
             ENABLE_FLIGHT_MODE(MANUAL_MODE);

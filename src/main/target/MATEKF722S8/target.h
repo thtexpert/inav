@@ -93,6 +93,8 @@
 #define USE_RANGEFINDER
 #define RANGEFINDER_I2C_BUS     BUS_I2C1
 
+#undef USE_TEMPERATURE_SENSOR
+
 // *************** SPI2 OSD ***********************
 #define USE_SPI_DEVICE_2
 #define SPI2_SCK_PIN            PB13

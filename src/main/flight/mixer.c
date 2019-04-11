@@ -133,10 +133,10 @@ void mixerUpdateStateFlags(void)
         DISABLE_STATE(FIXED_WING);
         ENABLE_STATE(HELICOPTER);
     } else  if (mixerConfig()->platformType == PLATFORM_FLETTNER) {
-        ENABLE_STATE(FIXED_WING);
+    	DISABLE_STATE(FIXED_WING);
         DISABLE_STATE(HELICOPTER);
     } else  if (mixerConfig()->platformType == PLATFORM_TILTROTOR) {
-        ENABLE_STATE(FIXED_WING);
+    	DISABLE_STATE(FIXED_WING);
         DISABLE_STATE(HELICOPTER);
     } else {
         DISABLE_STATE(FIXED_WING);
@@ -292,8 +292,8 @@ static void applyMotorRateLimiting(const float dT)
 void mixTable(const float dT)
 {
     int16_t input[3];   // RPY, range [-500:+500]
-    // Allow direct stick input to motors in passthrough mode on airplanes
-    if (STATE(FIXED_WING) && FLIGHT_MODE(MANUAL_MODE)) {
+    // Allow direct stick input to motors in passthrough mode on airplanes, manul box not available for MC
+    if (FLIGHT_MODE(MANUAL_MODE)) {
         // Direct passthru from RX
         input[ROLL] = rcCommand[ROLL];
         input[PITCH] = rcCommand[PITCH];

@@ -56,6 +56,7 @@
 #include "flight/failsafe.h"
 #include "flight/imu.h"
 #include "flight/mixer.h"
+#include "flight/mixer_twin.h"
 #include "flight/pid.h"
 #include "flight/servos.h"
 
@@ -295,6 +296,8 @@ static const blackboxDeltaFieldDefinition_t blackboxMainFields[] = {
     {"servo",       6, UNSIGNED, .Ipredict = PREDICT(1500),    .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(AVERAGE_2),      .Pencode = ENCODING(SIGNED_VB), CONDITION(SERVOS)},
     {"servo",       7, UNSIGNED, .Ipredict = PREDICT(1500),    .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(AVERAGE_2),      .Pencode = ENCODING(SIGNED_VB), CONDITION(SERVOS)},
 
+    {"nacelle",    -1, UNSIGNED, .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(AVERAGE_2),      .Pencode = ENCODING(SIGNED_VB), CONDITION(NACELLE)},
+
 #ifdef NAV_BLACKBOX
     {"navState",  -1, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(ALWAYS)},
     {"navFlags",  -1, UNSIGNED, .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(ALWAYS)},
@@ -422,6 +425,8 @@ typedef struct blackboxMainState_s {
     int32_t debug[DEBUG32_VALUE_COUNT];
     int16_t motor[MAX_SUPPORTED_MOTORS];
     int16_t servo[MAX_SUPPORTED_SERVOS];
+
+    int16_t nacelle;
 
     uint16_t vbat;
     int16_t amperage;
@@ -561,7 +566,10 @@ static bool testBlackboxConditionUncached(FlightLogFieldCondition condition)
         return getMotorCount() >= condition - FLIGHT_LOG_FIELD_CONDITION_AT_LEAST_MOTORS_1 + 1;
 
     case FLIGHT_LOG_FIELD_CONDITION_SERVOS:
-        return isMixerUsingServos();
+        return isMixerUsingServos() || isMixerUsingFlettner() || isMixerUsingTiltrotor();
+
+    case FLIGHT_LOG_FIELD_CONDITION_NACELLE:
+        return isMixerUsingTiltrotor();
 
     case FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_0:
     case FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_1:
@@ -804,6 +812,10 @@ static void writeIntraframe(void)
         }
     }
 
+    if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_NACELLE)) {
+    	blackboxWriteSignedVB(blackboxCurrent->nacelle);
+    }
+
 #ifdef NAV_BLACKBOX
     blackboxWriteSignedVB(blackboxCurrent->navState);
 
@@ -1004,6 +1016,10 @@ static void writeInterframe(void)
 
     if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_SERVOS)) {
         blackboxWriteMainStateArrayUsingAveragePredictor(offsetof(blackboxMainState_t, servo),     MAX_SUPPORTED_SERVOS);
+    }
+
+    if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_NACELLE)) {
+        blackboxWriteSignedVB(blackboxHistory[0]->nacelle - (blackboxHistory[1]->nacelle + blackboxHistory[2]->nacelle) / 2);
     }
 
 #ifdef NAV_BLACKBOX
@@ -1416,6 +1432,8 @@ static void loadMainState(timeUs_t currentTimeUs)
     for (int i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
         blackboxCurrent->servo[i] = servo[i];
     }
+
+    blackboxCurrent->nacelle = tiltlive.nacelle / 10;
 
 #ifdef NAV_BLACKBOX
     blackboxCurrent->navState = navCurrentState;
