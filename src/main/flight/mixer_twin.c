@@ -320,7 +320,7 @@ void pgResetFn_tiltSwashServos(servoSwash_t *instance)
 	);
 }
 
-static int32_t		nacelle_angle = 90000000; // default to heli position
+static int32_t		nacelle_angle = 45000000; // default to heli position
 static float nacelle_cos = 1.0; // 0 at heli, 1 at plane mode
 static float nacelle_sin = 1.0; // 1 at heli, 0 at plane mode
 static bool nacelleServoValid = false;
@@ -331,9 +331,11 @@ void writeTiltrotorServos(int firstunusedservo)
 	{
 		// nacelle servo controll mus be at 0 degree or 90 degree before servo is controlled
 		if(rcData[AUX2] > 1020 && rcData[AUX2] < 1080 ){
+			presetNacelle(rcData[AUX2]);
 			nacelleServoValid = true;
 		}
 		if(rcData[AUX2] > 1920 && rcData[AUX2] < 1980 ){
+			presetNacelle(rcData[AUX2]);
 			nacelleServoValid = true;
 		}
 	}

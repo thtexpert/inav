@@ -182,8 +182,9 @@ static void updateArmingStatus(void)
         }
 
         /* CHECK: Throttle */
-        if (!armingConfig()->fixed_wing_auto_arm) {
+        if (!armingConfig()->fixed_wing_auto_arm || getMotorCount() > 0) {
             // Don't want this check if fixed_wing_auto_arm is in use - machine arms on throttle > LOW
+        	// in case of no motor mixer configurated, we don't ned to care on motor start running
             if (calculateThrottleStatus() != THROTTLE_LOW) {
                 ENABLE_ARMING_FLAG(ARMING_DISABLED_THROTTLE);
             } else {

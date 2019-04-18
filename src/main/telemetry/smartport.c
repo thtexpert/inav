@@ -458,19 +458,19 @@ void processSmartPortTelemetry(smartPortPayload_t *payload, volatile bool *clear
                 }
                 break;
             case FSSP_DATAID_INT_PITCH    :
-                if (STATE(FIXED_WING)) {
+                if (isMixerUsingTiltrotor() || isMixerUsingFlettner()) {
                     smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_PITCH] ));
                     *clearToSend = false;
                 }
                 break;
             case FSSP_DATAID_INT_ROLL     :
-                if (STATE(FIXED_WING)) {
+                if (isMixerUsingTiltrotor() || isMixerUsingFlettner()) {
                     smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_ROLL] ));
                     *clearToSend = false;
                 }
                 break;
             case FSSP_DATAID_INT_YAW      :
-                if (STATE(FIXED_WING)) {
+                if (isMixerUsingTiltrotor() || isMixerUsingFlettner()) {
                     smartPortSendPackage(id, lrintf(10 * axisPID_I[FD_YAW] ));
                     *clearToSend = false;
                 }
