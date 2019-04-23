@@ -47,11 +47,11 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 | `tilt_gaindiffpitchheli` | (scaling 10 = 1%) | mixer differnetial pitch gain in heli position  |
 | `tilt_gaindiffpitchplane` | (scaling 10 = 1%) | mixer differnetial pitch gain in plane position  |
 | `tilt_centerall` |  | debug support for mechanical leveling. When set to 1, all swashplates will move to zero degree. Defualt is 0. Caution this disables all control! |
+| | **Servo Output Mixer** |
 | `tilt_platetype` |  | Select the SwashPlateType for the servo mixer NORMAL (0): two servos front and back of rotor mast = 0, H120 = 1, custom = 2. This is storage only for the configurator. Configurator is able to set individual servo mixes (tmix) for each servo.
 | `tilt_nacelletype` |  | Select number of nacelle servos  |
 | `tilt_cyclictravel` | (scaling 10 = 1%) | preset cyclic servo mixer gain for tilt_platetype NORMAL |
 | `tilt_collectivetravel` | (scaling 10 = 1%)  | preset collective servo mixer gain for tilt_platetype NORMAL |
-| | **Servo Output Mixer** |
 | `tmix 0 <pitch> <collective>` | (scaling 10 = 1%) | mixing of left swash plate pitch and collective to servo number 1 |
 | `tmix 1 <pitch> <collective>` | (scaling 10 = 1%) | mixing of left swash plate pitch and collective to servo number 2 |
 | `tmix 2 <pitch> <collective>` | (scaling 10 = 1%) | mixing of right swash plate pitch and collective to servo number 3 |

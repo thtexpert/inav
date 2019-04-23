@@ -1441,6 +1441,7 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         sbufWriteU16(dst, mixerFlettnerMutable()->pitchtravel);  	// scaling 10 = 1%
         sbufWriteU16(dst, mixerFlettnerMutable()->rolltravel);  	// scaling 10 = 1%
         sbufWriteU16(dst, mixerFlettnerMutable()->collectivetravel);	// scaling 10 = 1%
+        sbufWriteU16(dst, mixerFlettnerMutable()->collectiveoffset); // scaling 100 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->cyclicring);		// scaling 100 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->collectivemax);		// scaling 100 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->collectivemin);	// scaling 100 = 1degree
@@ -1455,9 +1456,8 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         sbufWriteU16(dst, mixerFlettnerMutable()->rotationright);	// scaling 10 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->virtualrotleft);	// scaling 10 = 1degree
         sbufWriteU16(dst, mixerFlettnerMutable()->virtualrotright);	// scaling 10 = 1degree
-        sbufWriteU16(dst, mixerFlettnerMutable()->cyclictravel);	// scaling 10 = 1%
-        sbufWriteU16(dst, mixerFlettnerMutable()->collectivetravel);	// scaling 10 = 1%
-        sbufWriteU16(dst, mixerFlettnerMutable()->collectiveoffset); // scaling 100 = 1degree
+        sbufWriteU16(dst, mixerFlettnerMutable()->cyclicgain);	// scaling 10 = 1%
+        sbufWriteU16(dst, mixerFlettnerMutable()->collectivegain);	// scaling 10 = 1%
     	break;
     case MSP2_FLETTNER_SERVO_MIX: // READ
         for (int i = 0; i < 6; i++) {
@@ -2674,6 +2674,7 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
         mixerFlettnerMutable()->pitchtravel = sbufReadU16(src); 			// scaling 10 = 1%
         mixerFlettnerMutable()->rolltravel = sbufReadU16(src);			// scaling 10 = 1%
         mixerFlettnerMutable()->collectivetravel = sbufReadU16(src);			// scaling 10 = 1%
+    	mixerFlettnerMutable()->collectiveoffset = sbufReadU16(src);		// scaling 100 = 1degree
         mixerFlettnerMutable()->cyclicring = sbufReadU16(src);			// scaling 100 = 1degree
         mixerFlettnerMutable()->collectivemax = sbufReadU16(src);				// scaling 100 = 1degree
         mixerFlettnerMutable()->collectivemin = sbufReadU16(src);				// scaling 100 = 1degree
@@ -2688,9 +2689,8 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
     	mixerFlettnerMutable()->rotationright = sbufReadU16(src);			// scaling 10 = 1degree
     	mixerFlettnerMutable()->virtualrotleft = sbufReadU16(src);		// scaling 10 = 1degree
     	mixerFlettnerMutable()->virtualrotright = sbufReadU16(src);		// scaling 10 = 1degree
-    	mixerFlettnerMutable()->cyclictravel = sbufReadU16(src);			// scaling 10 = 1%
-    	mixerFlettnerMutable()->collectivetravel = sbufReadU16(src);		// scaling 10 = 1%
-    	mixerFlettnerMutable()->collectiveoffset = sbufReadU16(src);		// scaling 100 = 1degree
+    	mixerFlettnerMutable()->cyclicgain = sbufReadU16(src);			// scaling 10 = 1%
+    	mixerFlettnerMutable()->collectivegain = sbufReadU16(src);			// scaling 10 = 1%
     	break;
 
     case MSP2_FLETTNER_SET_SERVO_MIX: // READ

@@ -53,6 +53,7 @@ PG_RESET_TEMPLATE(mixerflettner_t, mixerFlettner,
 		.pitchtravel = 710,			// scaling 10 = 1%
 		.rolltravel = 450,			// scaling 10 = 1%
 		.collectivetravel = 480,			// scaling 10 = 1%
+		.collectiveoffset = 400,		// scaling 100 = 1degree;
 		.cyclicring = 600,			// scaling 100 = 1degree
 		.collectivemax = 1200,			// scaling 100 = 1degree
 		.collectivemin = -400,			// scaling 100 = 1degree
@@ -67,8 +68,8 @@ PG_RESET_TEMPLATE(mixerflettner_t, mixerFlettner,
 		.rotationright = 300,		// scaling 10 = 1degree
 		.virtualrotleft = 170,		// scaling 10 = 1degree
 		.virtualrotright = 170,		// scaling 10 = 1degree
-		.cyclictravel = -430,		// scaling 10 = 1%
-		.collectiveoffset = 400		// scaling 100 = 1degree;
+		.cyclicgain = 430,		// scaling 10 = 1%
+		.collectivegain = -430		// scaling 10 = 1%
 );
 
 PG_REGISTER_ARRAY_WITH_RESET_FN(servoSwash_t, MAX_FLETTNER_SWASH_SERVOS, flettnerSwashServos, PG_FLETTNER_SWASH_SERVOS, 0);
@@ -325,6 +326,11 @@ static float nacelle_cos = 1.0; // 0 at heli, 1 at plane mode
 static float nacelle_sin = 1.0; // 1 at heli, 0 at plane mode
 static bool nacelleServoValid = false;
 
+void presetNacelle(int16_t data)
+{
+	nacelle_angle = 90000000 - (data - 1050) * 100000;
+}
+
 void writeTiltrotorServos(int firstunusedservo)
 {
 	if(nacelleServoValid == false)
@@ -422,11 +428,6 @@ void nacelle_control(timeDelta_t looptime)
 		gain = tiltSwashServos(4 + i)->pitch + (float)(tiltSwashServos(4 + i)->collective - tiltSwashServos(4 + i)->pitch)/ 9000. * (float)tiltlive.nacelle ;
 		servo[4 + i] = (int16_t) gain;
 	}
-}
-
-void presetNacelle(int16_t data)
-{
-	nacelle_angle = 90000000 - (data - 1050) * 100000;
 }
 
 void tiltrotorMixer(void)

@@ -29,6 +29,7 @@ typedef struct mixerflettner_s {
 	int16_t pitchtravel;  	// scaling 10 = 1%
 	int16_t rolltravel;  	// scaling 10 = 1%
 	int16_t collectivetravel;	// scaling 10 = 1%
+	int16_t collectiveoffset;	// scaling 100 = 1degree;
 	int16_t cyclicring;		// scaling 100 = 1degree
 	int16_t collectivemax;		// scaling 100 = 1degree
 	int16_t collectivemin;		// scaling 100 = 1degree
@@ -43,8 +44,8 @@ typedef struct mixerflettner_s {
 	int16_t rotationright;	// scaling 10 = 1degree
 	int16_t virtualrotleft;	// scaling 10 = 1degree
 	int16_t virtualrotright;	// scaling 10 = 1degree
-	int16_t cyclictravel;	// scaling 10 = 1%
-	int16_t collectiveoffset;	// scaling 100 = 1degree;
+	int16_t cyclicgain;			// scaling 10 = 1%
+	int16_t collectivegain;		// scaling 10 = 1%
 } mixerflettner_t;
 
 PG_DECLARE(mixerflettner_t, mixerFlettner);
