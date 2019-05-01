@@ -108,7 +108,8 @@
 #define PG_FLETTNER_SWASH_SERVOS 1017
 #define PG_MIXER_TILT 1018
 #define PG_TILT_SWASH_SERVOS 1019
-#define PG_INAV_END 1019
+#define PG_SYSTEM_IDENT 1020
+#define PG_INAV_END 1020
 
 // OSD configuration (subject to change)
 //#define PG_OSD_FONT_CONFIG 2047

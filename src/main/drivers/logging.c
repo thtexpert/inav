@@ -60,6 +60,7 @@ static const char *     eventDescription[BOOT_EVENT_CODE_COUNT] = {
     [BOOT_EVENT_1WIRE_DETECTION]            = "1WIRE_DETECTION",
     [BOOT_EVENT_HARDWARE_IO_CONFLICT]       = "HARDWARE_CONFLICT",
     [BOOT_EVENT_OPFLOW_DETECTION]           = "OPFLOW_DETECTION",
+	[BOOT_EVENT_SYSTEM_IDENT_INIT_DONE]     = "SYSTEM_IDENTIFICATION"
 };
 
 const char * getBootlogEventDescription(bootLogEventCode_e eventCode)

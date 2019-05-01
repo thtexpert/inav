@@ -110,6 +110,9 @@ tables:
   - name: vtx_low_power_disarm
     values: ["OFF", "ON", "UNTIL_FIRST_ARM"]
     enum: vtxLowerPowerDisarm_e
+  - name: sysidaxis
+    values: ["ROLL", "PITCH", "YAW"]
+    
 
 groups:
   - name: PG_GYRO_CONFIG
@@ -1964,4 +1967,26 @@ groups:
         field: collectivetravel
         min: -2000
         max: 2000
+        
+  - name: PG_SYSTEM_IDENT
+    type: sysid_t
+    headers: ["flight/system_identification.h"]
+    condition: USE_SYSTEM_IDENT
+    members:
+      - name: sysid_axis
+        field: axis
+        type: uint8_t
+        table: sysidaxis
+      - name: sysid_order
+        field: order
+        min: 7
+        max: 9
+      - name: sysid_denum
+        field: denum
+        min: 1
+        max: 16
+      - name: sysid_level
+        field: level
+        min: 1
+        max: 255
         

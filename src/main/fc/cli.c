@@ -147,7 +147,7 @@ static void cliBootlog(char *cmdline);
 static const char * const featureNames[] = {
     "THR_VBAT_COMP", "VBAT", "TX_PROF_SEL", "BAT_PROF_AUTOSWITCH", "MOTOR_STOP",
     "", "SOFTSERIAL", "GPS", "",
-    "", "TELEMETRY", "CURRENT_METER", "3D", "RX_PARALLEL_PWM",
+    "SYSTEM_IDENT", "TELEMETRY", "CURRENT_METER", "3D", "RX_PARALLEL_PWM",
     "RX_MSP", "RSSI_ADC", "LED_STRIP", "DASHBOARD", "",
     "BLACKBOX", "", "TRANSPONDER", "AIRMODE",
     "SUPEREXPO", "VTX", "RX_SPI", "", "PWM_SERVO_DRIVER", "PWM_OUTPUT_ENABLE",

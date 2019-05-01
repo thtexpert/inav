@@ -85,6 +85,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT + 1] = {
     { BOXUSER1, "USER1", 47 },
     { BOXUSER2, "USER2", 48 },
     { BOXLOITERDIRCHN, "LOITER CHANGE", 49 },
+    { BOXSYSID, "SYSTEM_IDENT", 50 },
     { CHECKBOX_ITEM_COUNT, NULL, 0xFF }
 };
 
@@ -291,6 +292,12 @@ void initActiveBoxIds(void)
 #endif
 #endif
 #endif
+#endif
+
+#ifdef USE_SYSTEM_IDENT
+    if (feature(FEATURE_SYSTEM_IDENT)) {
+    	activeBoxIds[activeBoxIdCount++] = BOXSYSID;
+    }
 #endif
 }
 

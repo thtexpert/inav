@@ -42,3 +42,8 @@
 #define MSP2_SERVO_PWM_OVERRIDE	      0x1015    // out message
 #define MSP2_SET_SERVO_PWM_OVERRIDE	  0x1016    // in message
 
+// system identification related
+#define MSP2_SYSID_SET_SETUP          0x1017    // in message   get system identification setup data
+#define MSP2_SYSID_GET_SETUP          0x1018    // out message  return system identification setup data
+#define MSP2_SYSID_INIT_CAPTURE_READ  0x1019    // in message   receive start
+#define MSP2_SYSID_GET_CAPTURE_SMPLS  0x101A    // out message  return next 8 samples

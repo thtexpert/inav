@@ -527,6 +527,15 @@ void processRx(timeUs_t currentTimeUs)
     if (FLIGHT_MODE(ANGLE_MODE) || FLIGHT_MODE(HORIZON_MODE)) {
         LED1_ON;
     } else {
+#ifdef USE_PWM_SERVO_DRIVER
+		if (feature(FEATURE_PWM_SERVO_DRIVER)) {
+			if(!IS_RC_MODE_ACTIVE(BOXSYSID))
+			{
+				// LED1 is also indicating system identification execution
+				LED1_OFF;
+			}
+		}
+#endif
         LED1_OFF;
     }
 

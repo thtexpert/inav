@@ -68,6 +68,7 @@
 #include "flight/mixer_twin.h"
 #include "flight/pid.h"
 #include "flight/servos.h"
+#include "flight/system_identification.h"
 
 #include "config/config_eeprom.h"
 #include "config/feature.h"
@@ -468,6 +469,36 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
             sbufWriteU16(dst, servoPwmOverrides(i)->servoPwmRate);
         }
         break;
+#ifdef USE_SYSTEM_IDENT
+    case MSP2_SYSID_GET_SETUP:
+    	sbufWriteU8(dst,systemIdentification()->axis);
+    	sbufWriteU8(dst,systemIdentification()->order);
+    	sbufWriteU8(dst,systemIdentification()->denum);
+    	sbufWriteU8(dst,systemIdentification()->level);
+    	break;
+    case MSP2_SYSID_GET_CAPTURE_SMPLS:
+		{
+			uint16_t blocksize = 16;
+			uint16_t startaddr = sysIdGetCaptureReadAddress();
+			for(uint16_t i = startaddr; i < startaddr + blocksize; i++)
+			{
+				sbufWriteU32(dst,(uint32_t)sysIdGetCaptureData(i));
+			}
+			sysIdSetCaptureReadAddress(startaddr + blocksize);
+		}
+/*
+			// read in groups of 8 times 4 bytes to reduce bus load
+			const uint16_t Nsamples = 8;
+			int32_t data[Nsamples];
+			sysIdReadCaptureData(data,Nsamples);
+			for(uint16_t i = 0; i < Nsamples; i++)
+			{
+				sbufWriteU32(dst,data[i]);
+			}
+		}
+*/
+    	break;
+#endif
     case MSP2_COMMON_MOTOR_MIXER:
         for (uint8_t i = 0; i < MAX_SUPPORTED_MOTORS; i++) {
             sbufWriteU16(dst, customMotorMixer(i)->throttle * 1000);
@@ -1912,7 +1943,24 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
         } else
             return MSP_RESULT_ERROR;
         break;
-
+#ifdef USE_SYSTEM_IDENT
+    case MSP2_SYSID_SET_SETUP:
+        if ((dataSize >= 4)) {
+        	systemIdentificationMutable()->axis = sbufReadU8(src);
+        	systemIdentificationMutable()->order = sbufReadU8(src);
+        	systemIdentificationMutable()->denum = sbufReadU8(src);
+        	systemIdentificationMutable()->level = sbufReadU8(src);
+        } else
+            return MSP_RESULT_ERROR;
+        break;
+    case MSP2_SYSID_INIT_CAPTURE_READ:
+        if ((dataSize >= 2)) {
+        	uint16_t address = sbufReadU16(src);
+        	sysIdSetCaptureReadAddress(address);
+        } else
+            return MSP_RESULT_ERROR;
+        break;
+#endif
     case MSP2_COMMON_SET_MOTOR_MIXER:
         sbufReadU8Safe(&tmp_u8, src);
         if ((dataSize == 9) && (tmp_u8 < MAX_SUPPORTED_MOTORS)) {

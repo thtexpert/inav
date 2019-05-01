@@ -131,6 +131,7 @@
 
 #include "telemetry/telemetry.h"
 
+#include "flight/system_identification.h"
 #include "uav_interconnect/uav_interconnect.h"
 
 #ifdef USE_HARDWARE_REVISION_DETECTION
@@ -678,6 +679,11 @@ void init(void)
     rcdeviceInit();
 #endif // USE_RCDEVICE
 
+#ifdef USE_SYSTEM_IDENT
+    if (feature(FEATURE_SYSTEM_IDENT)) {
+        sysIdInitialize();
+    }
+#endif
     // Latch active features AGAIN since some may be modified by init().
     latchActiveFeatures();
     motorControlEnable = true;

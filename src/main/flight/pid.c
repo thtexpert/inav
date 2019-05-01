@@ -40,6 +40,7 @@
 #include "flight/pid.h"
 #include "flight/imu.h"
 #include "flight/mixer.h"
+#include "flight/system_identification.h"
 
 #include "io/gps.h"
 
@@ -525,8 +526,11 @@ static void pidApplyFixedWingRateController(pidState_t *pidState, flight_dynamic
 
 static void pidApplyMulticopterRateController(pidState_t *pidState, flight_dynamics_index_t axis)
 {
+#if defined(USE_SYSTEM_IDENT)
+	const float rateError = sysIdUpdate(pidState->rateTarget, pidState->gyroRate, axis);
+#else
     const float rateError = pidState->rateTarget - pidState->gyroRate;
-
+#endif
     // Calculate new P-term
     float newPTerm = rateError * pidState->kP;
     // Constrain YAW by yaw_p_limit value if not servo driven (in that case servo limits apply)
