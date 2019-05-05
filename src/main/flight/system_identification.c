@@ -23,9 +23,9 @@ PG_REGISTER_WITH_RESET_TEMPLATE(sysid_t, systemIdentification, PG_SYSTEM_IDENT, 
 
 PG_RESET_TEMPLATE(sysid_t, systemIdentification,
 		.axis =  0,  	//
-		.order = 9,  	// max order 9
-		.denum = 1,	// run every loop
-		.level = 25	// level of stimulus (+/-) full throttle would be 500;
+		.order = 8,  	// max order 9
+		.denum = 8,	// run every loop
+		.level = 15	// level of stimulus (+/-) full throttle would be 500;
 );
 
 typedef enum SysIdState {
@@ -43,7 +43,7 @@ static int32_t sysidTimer = 0;
 static int16_t numOfSamples = 0;
 static uint16_t readAddressPointer = 0;
 
-#define PRESAMPLES 128
+#define PRESAMPLES 64
 #define MAXSAMPLES 511
 
 typedef struct sysid_data_s {
