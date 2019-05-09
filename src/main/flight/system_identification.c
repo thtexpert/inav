@@ -11,8 +11,13 @@
 #include "common/memory.h"
 
 #include "fc/config.h"
+#include "fc/fc_core.h"
 #include "fc/rc_modes.h"
 #include "fc/runtime_config.h"
+
+#include "flight/pid.h"
+
+#include "blackbox/blackbox.h"
 
 #include "drivers/logging.h"
 #include "drivers/light_led.h"
@@ -52,6 +57,7 @@ typedef struct sysid_data_s {
 } sysid_data_t;
 
 static sysid_data_t sysIdData;
+static float meanposition = 0;
 
 void fillPrbsStimulus(uint8_t order);
 
@@ -126,11 +132,21 @@ float sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis
 				{
 					nextsysIdState = SYSID_STATE_PRESAMPLES;
 					sysidTimer = PRESAMPLES;
+					meanposition = 0;
+#ifdef USE_BLACKBOX
+				if (feature(FEATURE_BLACKBOX)) {
+			        flightLogEvent_syncBeep_t eventData;
+			        eventData.time = getFlightTime();
+			        blackboxLogEvent(FLIGHT_LOG_EVENT_SYNC_BEEP, (flightLogEventData_t *) &eventData);
+				}
+#endif
 				}
 				break;
 			case SYSID_STATE_PRESAMPLES:
 				// inject error
 				errorRate += calculateErrorInject(numOfSamples - sysidTimer - 1);
+				// accumulate actual integrator position to log mean offset for detailed trimming
+				meanposition += axisPID_I[axis];
 				if(sysidTimer == 0)
 				{
 					nextsysIdState = SYSID_STATE_SAMPLES;
@@ -247,6 +263,11 @@ int32_t sysIdGetCaptureData(uint16_t index)
 	if(index < numOfSamples)
 	{
 		data = sysIdData.capture[index];
+	}
+	if(index == numOfSamples)
+	{
+		// final sample is the mean deviation in percent * 10
+		data = 1000 * meanposition / PRESAMPLES / systemIdentification()->denum / pidProfile()->pidSumLimit;
 	}
 	return data;
 }
