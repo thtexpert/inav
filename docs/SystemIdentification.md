@@ -19,6 +19,8 @@ The SYSTEM_IDENT feature needs to be enabled for system identification.
 * a signal level for the disturbance need to be provided (typically 5% of axis P factor)
 
 The actual disturbance will take about (looptime / denumerator) * (stimulus length + 65) 
+E.g. 1msec looptime with denumerator of 4 at order 8 takes approx 1ms x 4 x 255 ~= 1sec.
+
 
 ## How to start System Identification
 
@@ -47,3 +49,14 @@ Note the data read is only allowed in disarmed mode. Aircraft must be grounded w
 The define 'USE_SYSTEM_IDENT' is used to seperate the system identification part of the software.
 
 boxId_e enum is extended by BOXSYSID for definition of mode switch.
+
+## bootlog
+
+The bootlog shows the setup of the PRBS generator:
+ 
+Time Evt            Description  Parameters
+...
+2865: 25  SYSTEM_IDENTIFICATION  (8, 255)
+...
+
+Above example the PRBS is configure in order 8 with 255 samples.

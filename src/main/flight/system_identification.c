@@ -166,6 +166,8 @@ float sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis
 					LED1_OFF;
 				}
 				errorRate += calculateErrorInject(samplecounter);
+				// for debugging uncomment to inject 12.5Hz signal
+				// errorRate += (((int)(getFlightTime()*1000/40) % 2) - 0.5) * 2 * (float)systemIdentification()->level;
 				meas += gyroRate * 5;
 				if(denumerator == 0)
 				{
