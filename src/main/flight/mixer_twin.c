@@ -26,6 +26,7 @@
 #include "drivers/pwm_mapping.h"
 #include "drivers/time.h"
 
+#include "fc/fc_core.h"
 #include "fc/config.h"
 #include "fc/rc_controls.h"
 #include "fc/rc_modes.h"
@@ -335,12 +336,8 @@ void writeTiltrotorServos(int firstunusedservo)
 {
 	if(nacelleServoValid == false)
 	{
-		// nacelle servo controll mus be at 0 degree or 90 degree before servo is controlled
-		if(rcData[AUX2] > 1020 && rcData[AUX2] < 1080 ){
-			presetNacelle(rcData[AUX2]);
-			nacelleServoValid = true;
-		}
-		if(rcData[AUX2] > 1920 && rcData[AUX2] < 1980 ){
+		// nacelle servo control is enabled after calibration complete
+		if( !isCalibrating() && failsafeIsReceivingRxData() ){
 			presetNacelle(rcData[AUX2]);
 			nacelleServoValid = true;
 		}
