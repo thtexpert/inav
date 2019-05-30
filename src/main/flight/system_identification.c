@@ -46,9 +46,9 @@ static SysIdState sysIdState = SYSID_STATE_RESET;
 
 static int32_t sysidTimer = 0;
 static int16_t numOfSamples = 0;
+static int16_t numOfPreSamples = 0;
 static uint16_t readAddressPointer = 0;
 
-#define PRESAMPLES 64
 #define MAXSAMPLES 511
 
 typedef struct sysid_data_s {
@@ -131,7 +131,7 @@ float sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis
 				if(sysidTimer == 0)
 				{
 					nextsysIdState = SYSID_STATE_PRESAMPLES;
-					sysidTimer = PRESAMPLES;
+					sysidTimer = numOfPreSamples;
 					meanposition = 0;
 #ifdef USE_BLACKBOX
 				if (feature(FEATURE_BLACKBOX)) {
@@ -243,6 +243,7 @@ void fillPrbsStimulus(uint8_t order)
 	  ++period;
 	} while (lfsr != start_state);
 	numOfSamples = period;
+	numOfPreSamples =(int16_t)( (numOfSamples + 1) / 2);
 	addBootlogEvent4(BOOT_EVENT_SYSTEM_IDENT_INIT_DONE, BOOT_EVENT_FLAGS_NONE, order, numOfSamples);
 
 }
@@ -269,7 +270,7 @@ int32_t sysIdGetCaptureData(uint16_t index)
 	if(index == numOfSamples)
 	{
 		// final sample is the mean deviation in percent * 10
-		data = 1000 * meanposition / PRESAMPLES / systemIdentification()->denum / pidProfile()->pidSumLimit;
+		data = 1000 * meanposition / numOfPreSamples / systemIdentification()->denum / pidProfile()->pidSumLimit;
 	}
 	return data;
 }
