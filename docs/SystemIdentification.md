@@ -18,7 +18,7 @@ As the PRBS signal represents a series of step function in an 'arbitrary' but de
 
 * An axis to test has to be selected
 * the order of the stimulus length needs to be set (8 = 255 samples, 9 = 511 samples)
-* a signal level for the disturbance need to be provided (typically 5% of axis P factor)
+* a signal level for the disturbance need to be provided (typically 20...50, which is 4...10% of axis full scale travel (pidsum_limit = 500))
 ![SYSTEM_IDENT setup and read tab](Screenshots/sysid_sample_capture.png)
 
 
@@ -30,9 +30,8 @@ E.g. 1msec looptime with denumerator of 4 at order 8 takes approx 1ms x 4 x 255 
 
 ## How to start System Identification
 
-When hoovering in a stable position trigger the defined system_ident switch. The sequence will start with  0.5sec delay after trigger to avoid glitches by switch actuation. Try to do no apprupt steering during the BRBS period. Capture will only be valid, if system_ident mode switch 
-One sequence can be recorded.
-After sequence is finished, PRBS can be re-executed if trigger condition is released for more than 0.5sec. Retriggering will overwrite previous capture.
+When hoovering in a stable position turn on the defined system_ident switch. The sequence will start with  0.5sec delay after trigger to avoid glitches by switch actuation. Try to do no apprupt steering during the BRBS period. Capture will only be valid, if system_ident mode switch long enough that one sequence can be recorded.
+After sequence is finished, PRBS can be re-executed if switch is turned off for more than 0.5sec. Restarting will overwrite previous capture.
 A running PRBS sequence can be terminated at any time when system_ident mode switch is set back from running position.
 
 ## How to look at the data
@@ -48,7 +47,7 @@ Note the data read is only allowed in disarmed mode. Aircraft must be grounded w
 | `sysid_axis`  |   | select axis for system identification (ROLL, PITCH ro YAW)  |
 | `sysid_order` |   |  order of PRBS signal  (8  for 255 samples, 9 for 511 samples)|
 | `sysid_denum` |   | denumerator for PRBS execution. Data is recorded every nth loop cycle | 
-| `sysid_level` |  (scaling 10 = 1%)| disturbance level relative to P factor of selected axis |
+| `sysid_level` |  (scaling 10 = 1%)| disturbance level of selected axis |
 
 
 ## Internals
