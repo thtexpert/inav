@@ -9,6 +9,7 @@
 
 #include "common/utils.h"
 #include "common/memory.h"
+#include <math.h>
 
 #include "fc/config.h"
 #include "fc/fc_core.h"
@@ -51,6 +52,11 @@ static uint16_t readAddressPointer = 0;
 
 #define MAXSAMPLES 511
 
+// create offline (without trigger) delayed time domain peak at 61msec
+#define OFFLINELATENCY 61000.0
+// create offline (without trigger) noise peak at 37Hz
+#define OFFLINEFREQUENCY (37.0/1E6)
+
 typedef struct sysid_data_s {
     int32_t capture[MAXSAMPLES];
     uint16_t stimulus[MAXSAMPLES];
@@ -68,7 +74,16 @@ int32_t encodeCaptureData(uint16_t samplecounter, float gyroRate)
 }
 
 float calculateErrorInject(uint16_t samplecounter){
-	return (2.0 * (float)systemIdentification()->level) * ((float)sysIdData.stimulus[samplecounter] - 0.5);
+	int16_t offsetindex = 0;
+	float updateperiod = systemIdentification()->denum *  (float)gyroConfig()->looptime;
+	offsetindex = samplecounter - (int16_t) ((OFFLINELATENCY)/updateperiod);
+	if(offsetindex < 0)
+	{
+		offsetindex += numOfSamples;
+	}
+	float offsetvalue = (1.0 * (float)systemIdentification()->level) * ((float)sysIdData.stimulus[offsetindex] - 0.5);
+	offsetvalue += (float)systemIdentification()->level * 5.0 * sin_approx(2.0 * M_PIf * OFFLINEFREQUENCY * samplecounter * updateperiod);
+	return (2.0 * (float)systemIdentification()->level) * ((float)sysIdData.stimulus[samplecounter] - 0.5) + offsetvalue;
 }
 
 void sysIdInitialize()

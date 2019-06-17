@@ -21,6 +21,8 @@
 
 #define LED0                    PB3
 
+#undef USE_TEMPERATURE_SENSOR
+
 #define BEEPER                  PC15
 #define BEEPER_INVERTED
 
@@ -121,6 +123,8 @@
 
 // Number of available PWM outputs
 #define MAX_PWM_OUTPUT_PORTS    12
+
+#define USE_SYSTEM_IDENT
 
 // IO - stm32f303cc in 48pin package
 #define TARGET_IO_PORTA         0xffff

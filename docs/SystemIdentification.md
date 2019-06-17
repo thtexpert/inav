@@ -57,6 +57,8 @@ The define 'USE_SYSTEM_IDENT' is used to seperate the system identification part
 
 boxId_e enum is extended by BOXSYSID for definition of mode switch.
 
+After reboot the capture memory is load with a signal that shows a latency of 61msec and a noise freuqncy peak of 37Hz. This can be used to verify the scaling of the configurator.
+
 ## bootlog
 
 The bootlog shows the setup of the PRBS generator:
