@@ -22,7 +22,7 @@ As the PRBS signal represents a series of step function in an 'arbitrary' but de
 ![SYSTEM_IDENT setup and read tab](Screenshots/sysid_sample_capture.png)
 
 
-The actual disturbance will take about (looptime / denumerator) * (stimulus length + 65) 
+The actual disturbance will take about (looptime / denumerator) * (stimulus length * 1.5) 
 E.g. 1msec looptime with denumerator of 4 at order 8 takes approx 1ms x 4 x 255 ~= 1sec.
 ![SYSTEM_IDENT setup and read tab](Screenshots/sysid_blackboxplot.png)
 
@@ -55,8 +55,6 @@ Note the data read is only allowed in disarmed mode. Aircraft must be grounded w
 The define 'USE_SYSTEM_IDENT' is used to seperate the system identification part of the software.
 
 boxId_e enum is extended by BOXSYSID for definition of mode switch.
-
-After reboot the capture memory is load with a signal that shows a latency of 61msec and a noise freuqncy peak of 37Hz. This can be used to verify the scaling of the configurator.
 
 ## bootlog
 
