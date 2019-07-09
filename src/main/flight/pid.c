@@ -550,7 +550,7 @@ static void pidApplyMulticopterRateController(pidState_t *pidState, flight_dynam
         newDTerm = 0;
     } else {
         // Calculate delta for Dterm calculation. Apply filters before derivative to minimize effects of dterm kick
-        float deltaFiltered = pidProfile()->dterm_setpoint_weight * pidState->rateTarget - pidState->gyroRate;
+        float deltaFiltered = (pidProfile()->dterm_setpoint_weight - 1.0) * pidState->rateTarget + rateError;
 
 #ifdef USE_DTERM_NOTCH
         // Apply D-term notch
