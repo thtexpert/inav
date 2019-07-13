@@ -5,8 +5,10 @@ System Identification is a tool to measure the craft dynamic response. It can be
 ## How it works
 
 For measuring the dynamic response of the aircraft, a specific PRBS signal is injected in the PID controller feedback loop.
-This signal consists of a 'white noise' Pseudo Random Binary Sequence. The aircraft does behave a bit noisy during this seqeunce (typically abvout 1.2 second duration).
+This signal consists of a 'white noise' Pseudo Random Binary Sequence. The aircraft does behave a bit noisy during this sequence.
 As the PRBS signal represents a series of step function in an 'arbitrary' but defined sequence, a cross correlation of the measured response of the sensor with the input stimulus represents the small signal impulse response of the system.
+
+Due to the nature of the method (LTI systems) the integrator ist not correctly measured. The curve can be best used to trim P and D values.
 
 ## How to set it up
 
