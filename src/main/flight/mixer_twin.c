@@ -129,7 +129,7 @@ void flettnerMixer()
 
 
     // receiver collective is mapped to THROTTLE
-    collective = (rcData[THROTTLE] - PWM_RANGE_MIDDLE) * 2; // approx degree * 100 (480 -> 9.6 degree)
+    collective = (rxGetChannelValue(THROTTLE) - PWM_RANGE_MIDDLE) * 2; // approx degree * 100 (480 -> 9.6 degree)
 
     if (FLIGHT_MODE(MANUAL_MODE)) {   // Direct passthru from RX
     	pitch = rcCommand[PITCH];
@@ -338,7 +338,7 @@ void writeTiltrotorServos(int firstunusedservo)
 	{
 		// nacelle servo control is enabled after calibration complete
 		if( !isCalibrating() && failsafeIsReceivingRxData() ){
-			presetNacelle(rcData[AUX2]);
+			presetNacelle(rxGetChannelValue(AUX2));
 			nacelleServoValid = true;
 		}
 	}
@@ -377,7 +377,7 @@ void nacelle_control(timeDelta_t looptime)
 		nacelle_step_per_cycle_ppm = 1000;
 	}
 
-	int32_t		target_nacelle = 90000000 - (rcData[AUX2] - 1050) * 100000;
+	int32_t		target_nacelle = 90000000 - (rxGetChannelValue(AUX2) - 1050) * 100000;
 
 	if(target_nacelle > nacelle_angle)
 	{
@@ -451,7 +451,7 @@ void tiltrotorMixer(void)
 
 
     // receiver collective is mapped to THROTTLE
-    collective = (float)((float)tiltlive.collectivemin + (float)(tiltlive.collectivemax - tiltlive.collectivemin) * (float)(rcData[THROTTLE] - motorConfig()->minthrottle)/(motorConfig()->maxthrottle - motorConfig()->minthrottle) );
+    collective = (float)((float)tiltlive.collectivemin + (float)(tiltlive.collectivemax - tiltlive.collectivemin) * (float)(rxGetChannelValue(THROTTLE) - motorConfig()->minthrottle)/(motorConfig()->maxthrottle - motorConfig()->minthrottle) );
     collective = constrain(collective, tiltlive.collectivemin, tiltlive.collectivemax);
     tiltlive.leftcollective = (int16_t)(collective - diffcoll);
     tiltlive.rightcollective = (int16_t)(collective + diffcoll);

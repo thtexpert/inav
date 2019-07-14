@@ -19,7 +19,7 @@
 
 #include "blackbox/blackbox.h"
 
-#include "drivers/logging.h"
+#include "drivers/logging_codes.h"
 #include "drivers/light_led.h"
 
 #include "sensors/gyro.h"
@@ -89,7 +89,7 @@ void sysIdInitialize()
 	readAddressPointer = 0;
 }
 
-float sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis)
+float FAST_CODE NOINLINE sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis)
 {
 	static uint8_t denumerator = 0;
 	static uint16_t samplecounter = 0;
@@ -249,7 +249,7 @@ void fillPrbsStimulus(uint8_t order)
 	} while (lfsr != start_state);
 	numOfSamples = period;
 	numOfPreSamples =(int16_t)( (numOfSamples + 1) / 2);
-	addBootlogEvent4(BOOT_EVENT_SYSTEM_IDENT_INIT_DONE, BOOT_EVENT_FLAGS_NONE, order, numOfSamples);
+	// TODO(thtexpert): addBootlogEvent4(BOOT_EVENT_SYSTEM_IDENT_INIT_DONE, BOOT_EVENT_FLAGS_NONE, order, numOfSamples);
 
 }
 

@@ -29,12 +29,12 @@ typedef struct sysid_s {
 
 PG_DECLARE(sysid_t, systemIdentification);
 
-void sysIdInitialize();
+void sysIdInitialize(void);
 float sysIdUpdate(float rateTarget, float gyroRate, flight_dynamics_index_t axis);
 
 // set the address for reading capture data
 void sysIdSetCaptureReadAddress(uint16_t address);
-uint16_t sysIdGetCaptureReadAddress();
+uint16_t sysIdGetCaptureReadAddress(void);
 
 // read numOfDataToRead samples from capture memory, address is auto incremented
 // samples are filled with 0 in case of more samples are requested than available in memory

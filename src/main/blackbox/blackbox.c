@@ -66,6 +66,7 @@
 #include "navigation/navigation.h"
 
 #include "rx/rx.h"
+#include "rx/msp_override.h"
 
 #include "sensors/diagnostics.h"
 #include "sensors/acceleration.h"
@@ -218,6 +219,9 @@ static const blackboxDeltaFieldDefinition_t blackboxMainFields[] = {
     {"mcVelAxisD",  0, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
     {"mcVelAxisD",  1, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
     {"mcVelAxisD",  2, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
+    {"mcVelAxisFF", 0, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
+    {"mcVelAxisFF", 1, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
+    {"mcVelAxisFF", 2, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
     {"mcVelAxisOut",0, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
     {"mcVelAxisOut",1, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
     {"mcVelAxisOut",2, SIGNED,   .Ipredict = PREDICT(0),       .Iencode = ENCODING(SIGNED_VB),   .Ppredict = PREDICT(PREVIOUS),      .Pencode = ENCODING(SIGNED_VB), CONDITION(MC_NAV)},
@@ -360,9 +364,12 @@ static const blackboxSimpleFieldDefinition_t blackboxSlowFields[] = {
     {"hwHealthStatus",        -1, UNSIGNED, PREDICT(0),      ENCODING(UNSIGNED_VB)},
     {"powerSupplyImpedance",  -1, UNSIGNED, PREDICT(0),      ENCODING(UNSIGNED_VB)},
     {"sagCompensatedVBat",    -1, UNSIGNED, PREDICT(0),      ENCODING(UNSIGNED_VB)},
-    {"wind",                   0, SIGNED,   PREDICT(0),      ENCODING(UNSIGNED_VB)},
-    {"wind",                   1, SIGNED,   PREDICT(0),      ENCODING(UNSIGNED_VB)},
-    {"wind",                   2, SIGNED,   PREDICT(0),      ENCODING(UNSIGNED_VB)},
+    {"wind",                   0, SIGNED,   PREDICT(0),      ENCODING(SIGNED_VB)},
+    {"wind",                   1, SIGNED,   PREDICT(0),      ENCODING(SIGNED_VB)},
+    {"wind",                   2, SIGNED,   PREDICT(0),      ENCODING(SIGNED_VB)},
+#if defined(USE_RX_MSP) && defined(USE_MSP_RC_OVERRIDE)
+    {"mspOverrideFlags",      -1, UNSIGNED, PREDICT(0),      ENCODING(UNSIGNED_VB)},
+#endif
     {"IMUTemperature",        -1, SIGNED,   PREDICT(0),      ENCODING(SIGNED_VB)},
 #ifdef USE_BARO
     {"baroTemperature",       -1, SIGNED,   PREDICT(0),      ENCODING(SIGNED_VB)},
@@ -406,7 +413,7 @@ typedef struct blackboxMainState_s {
     int32_t axisPID_Setpoint[XYZ_AXIS_COUNT];
 
     int32_t mcPosAxisP[XYZ_AXIS_COUNT];
-    int32_t mcVelAxisPID[3][XYZ_AXIS_COUNT];
+    int32_t mcVelAxisPID[4][XYZ_AXIS_COUNT];
     int32_t mcVelAxisOutput[XYZ_AXIS_COUNT];
 
     int32_t mcSurfacePID[3];
@@ -477,6 +484,9 @@ typedef struct blackboxSlowState_s {
     uint16_t powerSupplyImpedance;
     uint16_t sagCompensatedVBat;
     int16_t wind[XYZ_AXIS_COUNT];
+#if defined(USE_RX_MSP) && defined(USE_MSP_RC_OVERRIDE)
+    uint16_t mspOverrideFlags;
+#endif
     int16_t imuTemperature;
 #ifdef USE_BARO
     int16_t baroTemperature;
@@ -529,10 +539,10 @@ static blackboxGpsState_t gpsHistory;
 static blackboxSlowState_t slowHistory;
 
 // Keep a history of length 2, plus a buffer for MW to store the new values into
-static blackboxMainState_t blackboxHistoryRing[3];
+static EXTENDED_FASTRAM blackboxMainState_t blackboxHistoryRing[3];
 
 // These point into blackboxHistoryRing, use them to know where to store history of a given age (0, 1 or 2 generations old)
-static blackboxMainState_t* blackboxHistory[3];
+static EXTENDED_FASTRAM blackboxMainState_t* blackboxHistory[3];
 
 static bool blackboxModeActivationConditionPresent = false;
 
@@ -574,7 +584,8 @@ static bool testBlackboxConditionUncached(FlightLogFieldCondition condition)
     case FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_0:
     case FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_1:
     case FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_2:
-        return pidBank()->pid[condition - FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_0].D != 0;
+        // D output can be set by either the D or the FF term
+        return pidBank()->pid[condition - FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_0].D != 0 || pidBank()->pid[condition - FLIGHT_LOG_FIELD_CONDITION_NONZERO_PID_D_0].FF != 0;
 
     case FLIGHT_LOG_FIELD_CONDITION_MAG:
 #ifdef USE_MAG
@@ -721,7 +732,7 @@ static void writeIntraframe(void)
 
         blackboxWriteSignedVBArray(blackboxCurrent->mcPosAxisP, XYZ_AXIS_COUNT);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             blackboxWriteSignedVBArray(blackboxCurrent->mcVelAxisPID[i], XYZ_AXIS_COUNT);
         }
 
@@ -929,7 +940,7 @@ static void writeInterframe(void)
         arraySubInt32(deltas, blackboxCurrent->mcPosAxisP, blackboxLast->mcPosAxisP, XYZ_AXIS_COUNT);
         blackboxWriteSignedVBArray(deltas, XYZ_AXIS_COUNT);
 
-        for (int i = 0; i < XYZ_AXIS_COUNT; i++) {
+        for (int i = 0; i < 4; i++) {
             arraySubInt32(deltas, blackboxCurrent->mcVelAxisPID[i], blackboxLast->mcVelAxisPID[i], XYZ_AXIS_COUNT);
             blackboxWriteSignedVBArray(deltas, XYZ_AXIS_COUNT);
         }
@@ -1086,6 +1097,10 @@ static void writeSlowFrame(void)
 
     blackboxWriteSigned16VBArray(slowHistory.wind, XYZ_AXIS_COUNT);
 
+#if defined(USE_RX_MSP) && defined(USE_MSP_RC_OVERRIDE)
+    blackboxWriteUnsignedVB(slowHistory.mspOverrideFlags);
+#endif
+
     blackboxWriteSignedVB(slowHistory.imuTemperature);
 
 #ifdef USE_BARO
@@ -1128,6 +1143,10 @@ static void loadSlowState(blackboxSlowState_t *slow)
 #endif
     }
 
+#if defined(USE_RX_MSP) && defined(USE_MSP_RC_OVERRIDE)
+    slow->mspOverrideFlags = (IS_RC_MODE_ACTIVE(BOXMSPRCOVERRIDE) ? 2 : 0) + (mspOverrideIsInFailsafe() ? 1 : 0);
+#endif
+
     bool valid_temp;
     valid_temp = getIMUTemperature(&slow->imuTemperature);
     if (!valid_temp) slow->imuTemperature = TEMPERATURE_INVALID_VALUE;
@@ -1138,7 +1157,7 @@ static void loadSlowState(blackboxSlowState_t *slow)
 #endif
 
 #ifdef USE_TEMPERATURE_SENSOR
-    for (uint8_t index; index < MAX_TEMP_SENSORS; ++index) {
+    for (uint8_t index = 0; index < MAX_TEMP_SENSORS; ++index) {
         valid_temp = getSensorTemperature(index, slow->tempSensorTemperature + index);
         if (!valid_temp) slow->tempSensorTemperature[index] = TEMPERATURE_INVALID_VALUE;
     }
@@ -1365,6 +1384,7 @@ static void loadMainState(timeUs_t currentTimeUs)
             blackboxCurrent->mcVelAxisPID[0][i] = lrintf(nav_pids->vel[i].proportional);
             blackboxCurrent->mcVelAxisPID[1][i] = lrintf(nav_pids->vel[i].integral);
             blackboxCurrent->mcVelAxisPID[2][i] = lrintf(nav_pids->vel[i].derivative);
+            blackboxCurrent->mcVelAxisPID[3][i] = lrintf(nav_pids->vel[i].feedForward);
             blackboxCurrent->mcVelAxisOutput[i] = lrintf(nav_pids->vel[i].output_constrained);
         }
 #endif
@@ -1394,7 +1414,7 @@ static void loadMainState(timeUs_t currentTimeUs)
 #endif
 
     for (int i = 0; i < 4; i++) {
-        blackboxCurrent->rcData[i] = rcData[i];
+        blackboxCurrent->rcData[i] = rxGetChannelValue(i);
         blackboxCurrent->rcCommand[i] = rcCommand[i];
     }
 
