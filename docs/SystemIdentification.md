@@ -58,13 +58,3 @@ The define 'USE_SYSTEM_IDENT' is used to seperate the system identification part
 
 boxId_e enum is extended by BOXSYSID for definition of mode switch.
 
-## bootlog
-
-The bootlog shows the setup of the PRBS generator:
- 
-Time Evt            Description  Parameters
-...
-2865: 25  SYSTEM_IDENTIFICATION  (8, 255)
-...
-
-Above example the PRBS is configure in order 8 with 255 samples.
