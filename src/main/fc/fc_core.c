@@ -809,14 +809,14 @@ void taskMainPidLoop(timeUs_t currentTimeUs)
 
     if (isMixerUsingFlettner()) {
     	flettnerMixer();
-    	firstfreeservo = MAX_FLETTNER_SWASH_SERVOS;
+    	firstfreeservo = getFlettnerServoCount();
     	writeFlettnerServos(firstfreeservo);
     }
 
     if (isMixerUsingTiltrotor()) {
     	nacelle_control(cycleTime);
     	tiltrotorMixer();
-    	firstfreeservo = MAX_TILT_SWASH_SERVOS - 2 + mixerTiltMutable()->nacelletype;
+    	firstfreeservo = getTiltrotorServoCout();
     	writeTiltrotorServos(firstfreeservo);
     }
 

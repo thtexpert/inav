@@ -42,6 +42,7 @@
 
 #include "io/serial.h"
 
+#include "flight/mixer_twin.h"
 #include "flight/servos.h"
 
 enum {
@@ -313,12 +314,12 @@ static void pwmInitMotors(timMotorServoHardware_t * timOutputs)
 
 static void pwmInitServos(timMotorServoHardware_t * timOutputs)
 {
-    const int servoCount = getServoCount();
+    const int servoCount = getServoCount() + getFlettnerServoCount() + getTiltrotorServoCout();
 
-    if (!isMixerUsingServos()) {
-        LOG_I(PWM, "Mixer does not use servos");
-        return;
-    }
+    //if (!isMixerUsingServos() && !isMixerUsingTiltrotor() && !isMixerUsingFlettner()) {
+    //    LOG_I(PWM, "Mixer does not use servos");
+    //    return;
+    //}
 
     // Check if too many servos
     if (servoCount > MAX_SERVOS) {

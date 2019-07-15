@@ -117,10 +117,12 @@ extern tiltlive_t tiltlive; // live data from tilt rotor control
 void writeFlettnerServos(int firstunusedservo);
 bool isMixerUsingFlettner(void);
 void flettnerMixer(void);
+int getFlettnerServoCount(void);
 
 void writeTiltrotorServos(int firstunusedservo);
 void nacelle_control(timeDelta_t looptime);
 bool isMixerUsingTiltrotor(void);
 void tiltrotorMixer(void);
+int getTiltrotorServoCout(void);
 
 #endif /* SRC_MAIN_FLIGHT_MIXER_TWIN_H_ */

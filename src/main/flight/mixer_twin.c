@@ -257,7 +257,10 @@ bool isMixerUsingFlettner(void)
     return (mixerConfig()->platformType == PLATFORM_FLETTNER);
 }
 
-
+int getFlettnerServoCount(void)
+{
+	return isMixerUsingFlettner()?MAX_FLETTNER_SWASH_SERVOS:0;
+}
 
 /////////////////////////////////////////////
 
@@ -493,4 +496,8 @@ bool isMixerUsingTiltrotor(void)
     return (mixerConfig()->platformType == PLATFORM_TILTROTOR);
 }
 
+int getTiltrotorServoCout(void)
+{
+	return isMixerUsingTiltrotor()?MAX_TILT_SWASH_SERVOS - 2 + mixerTiltMutable()->nacelletype:0;
+}
 
