@@ -181,11 +181,13 @@ exBusSensor_t jetiExSensors[] = {
     { "Current",        "A",    0,      EX_TYPE_14b,   DECIMAL_MASK(2) },
     { "Altitude",       "m",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) },
     { "Capacity",     "mAh",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
-    { "Nacelle ang",  "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) },
+    { "Nacelle Ang",  "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) },
     { "Roll Integr",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
     { "Pitch Integ",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
     { "Flight Mode",     "",    0,      EX_TYPE_22b,   DECIMAL_MASK(0) },
-    { "Air Speed",    "m/s",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) }
+    { "Air Speed",    "m/s",    0,      EX_TYPE_14b,   DECIMAL_MASK(1) },
+    { "Roll Angle",   "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) },
+    { "Pitch Angle",  "deg",    0,      EX_TYPE_22b,   DECIMAL_MASK(1) }
 };
 
 
@@ -195,11 +197,13 @@ enum exSensors_e {
     EX_CURRENT,
     EX_ALTITUDE,
     EX_CAPACITY,
-	EX_NACELLE_ANGLE	  ,
-	EX_INTEGRATOR_ROLL  ,
-	EX_INTEGRATOR_PITCH ,
+	EX_NACELLE_ANGLE,
+	EX_INTEGRATOR_ROLL,
+	EX_INTEGRATOR_PITCH,
 	EX_FLIGHT_MODE,
-	EX_AIRSPEED
+	EX_AIRSPEED,
+	EX_ROLL_ANGLE,
+	EX_PITCH_ANGLE
 };
 
 #define JETI_EX_SENSOR_COUNT (ARRAYLEN(jetiExSensors))
@@ -555,6 +559,8 @@ void handleJetiExBusTelemetry(void)
 				jetiExSensors[EX_AIRSPEED].value = pitot.airSpeed * 0.01; // m/s?
 			}
 #endif
+        	jetiExSensors[EX_ROLL_ANGLE].value = attitude.values.roll;
+        	jetiExSensors[EX_PITCH_ANGLE].value = attitude.values.pitch;
 
 
             // switch to TX mode

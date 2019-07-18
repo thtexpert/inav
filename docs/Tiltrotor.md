@@ -77,15 +77,15 @@ The 4th reciever channel maps to the collective rotor settings. A receiver input
 In TILTROTOR mode the smartport telemetry delivers the actual Nacell angle with ID 0x0450 and sends the angle with a resolution of 10 per 1 degree. Set the Ratio to 25.5 in Taranis setup to read correct value.
 
 * **0x0450** : current nacelle angle, use 25.5 ratio in Taranis
-* **0x0460** : integrator value of PITCH (available for all fixed wing)
-* **0x0470** : integrator value of ROLL (available for all fixed wing)
-* **0x0480** : integrator value of YAW (available for all fixed wing)
+* **0x0460** : integrator value of PITCH
+* **0x0470** : integrator value of ROLL
+* **0x0480** : integrator value of YAW
 
 ### Jeti Exbus Telemetry
 
 * **Nacelle ang** : current nacelle angle
-* **Roll Integr** : integrator value of PITCH (available for all fixed wing)
-* **Pitch Integ** : integrator value of ROLL (available for all fixed wing)
+* **Roll Integr** : integrator value of PITCH
+* **Pitch Integ** : integrator value of ROLL
 * **Flight Mode** : flight mode, sent as 5 digits. Number is sent as **ABCDE** detailed below. The numbers are additives (for example: if digit C is 6, it means both position hold and altitude hold are active) :
   * **A** : 1 = flaperon mode, 2 = auto tune mode, 4 = failsafe mode
   * **B** : 1 = return to home, 2 = waypoint mode, 4 = headfree mode
@@ -93,4 +93,6 @@ In TILTROTOR mode the smartport telemetry delivers the actual Nacell angle with 
   * **D** : 1 = angle mode, 2 = horizon mode, 4 = passthru mode
   * **E** : 1 = ok to arm, 2 = arming is prevented, 4 = armed
 * **Air Speed** : true air speed, from pitot sensor. (m/s)
+* **Roll Angle** : heading angle of PITCH
+* **Pitch Angle** : heading angle of ROLL
 
