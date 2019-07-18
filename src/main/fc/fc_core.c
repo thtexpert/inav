@@ -295,7 +295,8 @@ static void updateArmingStatus(void)
         // If arming is disabled and the ARM switch is on
         // Note that this should be last check so all other blockers could be cleared correctly
         // if blocking modes are linked to the same RC channel
-        if (isArmingDisabled() && IS_RC_MODE_ACTIVE(BOXARM)) {
+        // if no motor is defined, let the system arm automatically is switch set at power up
+        if (isArmingDisabled() && IS_RC_MODE_ACTIVE(BOXARM)  && getMotorCount() > 0) {
             ENABLE_ARMING_FLAG(ARMING_DISABLED_ARM_SWITCH);
         } else if (!IS_RC_MODE_ACTIVE(BOXARM)) {
             DISABLE_ARMING_FLAG(ARMING_DISABLED_ARM_SWITCH);
