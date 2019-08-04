@@ -472,7 +472,7 @@ int16_t gyroGetTemperature(void)
 
 int16_t gyroRateDps(int axis)
 {
-    return lrintf(gyro.gyroADCf[axis] / gyroDev0.scale);
+    return lrintf(gyro.gyroADCf[axis] * 10.0);
 }
 
 bool gyroSyncCheckUpdate(void)

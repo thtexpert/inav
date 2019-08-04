@@ -102,8 +102,13 @@ static void mpu6000AccAndGyroInit(gyroDev_t *gyro)
     busWrite(busDev, MPU_RA_SMPLRT_DIV, config->gyroConfigValues[1]);
     delayMicroseconds(15);
 
+#ifdef USE_ALTERNATE_GYRO_RATE
+    // Gyro +/- 500 DPS Full Scale
+    busWrite(busDev, MPU_RA_GYRO_CONFIG, INV_FSR_500DPS << 3);
+#else
     // Gyro +/- 2000 DPS Full Scale
     busWrite(busDev, MPU_RA_GYRO_CONFIG, INV_FSR_2000DPS << 3);
+#endif
     delayMicroseconds(15);
 
     // Accel +/- 16 G Full Scale
@@ -217,7 +222,11 @@ bool mpu6000GyroDetect(gyroDev_t *gyro)
     gyro->readFn = mpuGyroReadScratchpad;
     gyro->intStatusFn = gyroCheckDataReady;
     gyro->temperatureFn = mpuTemperatureReadScratchpad;
+#ifdef USE_ALTERNATE_GYRO_RATE
+    gyro->scale = 1.0f / 65.5f;     // 65.5 dps/lsb scalefactor
+#else
     gyro->scale = 1.0f / 16.4f;     // 16.4 dps/lsb scalefactor
+#endif
 
     return true;
 }

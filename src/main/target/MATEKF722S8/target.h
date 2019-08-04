@@ -180,6 +180,8 @@
 #define DEFAULT_FEATURES                ( FEATURE_TELEMETRY | FEATURE_CURRENT_METER | FEATURE_VBAT | FEATURE_BLACKBOX)
 #define CURRENT_METER_SCALE     179
 
+#define USE_ALTERNATE_GYRO_RATE  // use max 500dps gyro scale for better noise/drift performance
+
 #define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
 #define TARGET_IO_PORTA 0xffff
