@@ -2138,7 +2138,7 @@ groups:
         min: -2000
         max: 2000
       - name: tilt_gaindiffcollheli
-        field: gaindiffcollplane
+        field: gaindiffcollheli
         min: -2000
         max: 2000
       - name: tilt_gaindiffcollplane
