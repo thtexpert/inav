@@ -464,6 +464,11 @@ void FAST_CODE NOINLINE updatePIDCoefficients(void)
             pidState[axis].kI  = pidBank()->pid[axis].I / FP_PID_RATE_I_MULTIPLIER;
             pidState[axis].kD  = pidBank()->pid[axis].D / FP_PID_RATE_D_MULTIPLIER * axisTPA;
             pidState[axis].kFF = 0.0f;
+            if( mixerConfig()->platformType == PLATFORM_TILTROTOR || mixerConfig()->platformType == PLATFORM_FLETTNER)
+            {
+                pidState[axis].kFF = pidBank()->pid[axis].FF / FP_PID_RATE_FF_MULTIPLIER * tpaFactor;
+            }
+
 
             // Tracking anti-windup requires P/I/D to be all defined which is only true for MC
             if ((pidBank()->pid[axis].P != 0) && (pidBank()->pid[axis].I != 0)) {
@@ -672,6 +677,8 @@ static void FAST_CODE pidApplyMulticopterRateController(pidState_t *pidState, fl
 #endif
     // Calculate new P-term
     float newPTerm = rateError * pidState->kP;
+    float newFFTerm = pidState->rateTarget * pidState->kFF;
+
     // Constrain YAW by yaw_p_limit value if not servo driven (in that case servo limits apply)
     if (axis == FD_YAW && (getMotorCount() >= 4 && pidProfile()->yaw_p_limit)) {
         newPTerm = constrain(newPTerm, -pidProfile()->yaw_p_limit, pidProfile()->yaw_p_limit);
@@ -712,7 +719,7 @@ static void FAST_CODE pidApplyMulticopterRateController(pidState_t *pidState, fl
     }
 
     // TODO: Get feedback from mixer on available correction range for each axis
-    const float newOutput = newPTerm + newDTerm + pidState->errorGyroIf;
+    const float newOutput = newPTerm + newFFTerm +  newDTerm + pidState->errorGyroIf;
     const float newOutputLimited = constrainf(newOutput, -pidProfile()->pidSumLimit, +pidProfile()->pidSumLimit);
 
     // Prevent strong Iterm accumulation during stick inputs

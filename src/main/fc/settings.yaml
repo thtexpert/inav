@@ -900,6 +900,10 @@ groups:
         field: bank_mc.pid[PID_PITCH].D
         min: 0
         max: 200
+      - name: mc_ff_pitch
+        field: bank_mc.pid[PID_PITCH].FF
+        min: 0
+        max: 200
       - name: mc_p_roll
         field: bank_mc.pid[PID_ROLL].P
         min: 0
@@ -912,6 +916,10 @@ groups:
         field: bank_mc.pid[PID_ROLL].D
         min: 0
         max: 200
+      - name: mc_ff_roll
+        field: bank_mc.pid[PID_ROLL].FF
+        min: 0
+        max: 200
       - name: mc_p_yaw
         field: bank_mc.pid[PID_YAW].P
         min: 0
@@ -922,6 +930,10 @@ groups:
         max: 200
       - name: mc_d_yaw
         field: bank_mc.pid[PID_YAW].D
+        min: 0
+        max: 200
+      - name: mc_ff_yaw
+        field: bank_mc.pid[PID_YAW].FF
         min: 0
         max: 200
       - name: mc_p_level
