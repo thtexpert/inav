@@ -117,6 +117,17 @@
     #endif
 #endif
 
+#if defined(USE_BARO_DPS310)
+    #if defined(DPS310_SPI_BUS)
+    BUSDEV_REGISTER_SPI(busdev_dps310,      DEVHW_DPS310,       DPS310_SPI_BUS,     DPS310_CS_PIN,      NONE,           DEVFLAGS_USE_RAW_REGISTERS);
+    #elif defined(DPS310_I2C_BUS) || defined(BARO_I2C_BUS)
+    #if !defined(DPS310_I2C_BUS)
+        #define DPS310_I2C_BUS BARO_I2C_BUS
+    #endif
+    BUSDEV_REGISTER_I2C(busdev_dps310,      DEVHW_DPS310,       DPS310_I2C_BUS,     0x76,               NONE,           DEVFLAGS_USE_RAW_REGISTERS);
+    #endif
+#endif
+
 /** COMPASS SENSORS **/
 #if !defined(USE_TARGET_MAG_HARDWARE_DESCRIPTORS)
 #if defined(USE_MAG_HMC5883)
@@ -277,9 +288,11 @@
     BUSDEV_REGISTER_SPI(busdev_sdcard_spi,  DEVHW_SDCARD,       SDCARD_SPI_BUS,     SDCARD_CS_PIN,      NONE,           DEVFLAGS_USE_MANUAL_DEVICE_SELECT | DEVFLAGS_SPI_MODE_0);
 #endif
 
+/*
 #if defined(USE_SDCARD) && defined(USE_SDCARD_SDIO)
     BUSDEV_REGISTER_SDIO(busdev_sdcard_sdio,DEVHW_SDCARD,       SDCARD_SDIO_BUS,    SDCARD_CS_PIN,      NONE,           DEVFLAGS_USE_MANUAL_DEVICE_SELECT);
 #endif
+*/
 
 #if defined(USE_OLED_UG2864)
     #if !defined(UG2864_I2C_BUS)

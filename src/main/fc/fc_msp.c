@@ -45,7 +45,7 @@
 #include "drivers/osd.h"
 #include "drivers/osd_symbols.h"
 #include "drivers/pwm_mapping.h"
-#include "drivers/sdcard.h"
+#include "drivers/sdcard/sdcard.h"
 #include "drivers/serial.h"
 #include "drivers/system.h"
 #include "drivers/time.h"
@@ -666,6 +666,7 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         break;
 
     case MSP2_PID:
+    case MSP2_PID_V1:
         for (int i = 0; i < PID_ITEM_COUNT; i++) {
             sbufWriteU8(dst, pidBank()->pid[i].P);
             sbufWriteU8(dst, pidBank()->pid[i].I);
@@ -1702,6 +1703,7 @@ static mspResult_e mspFcProcessInCommand(uint16_t cmdMSP, sbuf_t *src)
         break;
 
     case MSP2_SET_PID:
+    case MSP2_SET_PID_V1:
         if (dataSize >= PID_ITEM_COUNT * 4) {
             for (int i = 0; i < PID_ITEM_COUNT; i++) {
                 pidBankMutable()->pid[i].P = sbufReadU8(src);

@@ -202,6 +202,9 @@
 //#define MSP_RXFAIL_CONFIG               77 //out message         Returns RXFAIL settings
 //#define MSP_SET_RXFAIL_CONFIG           78 //in message          Sets RXFAIL settings
 
+#define MSP2_PID_V1               		77 //out message         Returns extended PIDF values, allow access via V! protocol for msp via telemetry
+#define MSP2_SET_PID_V1        			78 //in message          Sets extended PIDF values, allow access via V! protocol for msp via telemetry
+
 #define MSP_SDCARD_SUMMARY              79 //out message         Get the state of the SD card
 
 #define MSP_BLACKBOX_CONFIG             80 //out message         Get blackbox settings

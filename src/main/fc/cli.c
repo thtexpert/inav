@@ -58,7 +58,7 @@ extern uint8_t __config_end;
 #include "drivers/io_impl.h"
 #include "drivers/osd_symbols.h"
 #include "drivers/rx_pwm.h"
-#include "drivers/sdcard.h"
+#include "drivers/sdcard/sdcard.h"
 #include "drivers/sensor.h"
 #include "drivers/serial.h"
 #include "drivers/stack_check.h"
@@ -3017,13 +3017,18 @@ static void cliTiltSwashServos(char *cmdline)
         }
 
         int32_t i = args[SERVO];
-        if (i >= 0 && i < MAX_TILT_SWASH_SERVOS &&
+        if (i >= 0 && i < 4 && i < MAX_TILT_SWASH_SERVOS &&
             args[PITCH] <=2000  && args[PITCH] >= -2000 &&
             args[COLLECTIVE] <=2000  && args[COLLECTIVE] >= -2000) {
         	tiltSwashServosMutable(i)->pitch = args[PITCH];
         	tiltSwashServosMutable(i)->collective = args[COLLECTIVE];
         	cliTiltSwashServos("");
-        } else  {
+        } else if(i >= 4 && i < MAX_TILT_SWASH_SERVOS &&
+                args[PITCH] <= PWM_PULSE_MAX  && args[PITCH] >= PWM_PULSE_MIN &&
+                args[COLLECTIVE] <= PWM_PULSE_MAX  && args[COLLECTIVE] >= PWM_PULSE_MIN) {
+        }
+        else
+		{
         	cliPrintLine("argument out of range");
             cliShowParseError();
         }
